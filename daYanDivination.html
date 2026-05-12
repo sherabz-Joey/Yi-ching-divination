@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大衍之數｜數字占卜</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #f5ede0; --gold: #b8860b; --gold-light: #d4a843;
+  --red-muted: #c4533a; --smoke: #e8dcc8; --ash: #9b8e7a; --deep: #0d0a06;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--deep); color: var(--paper);
+  font-family: 'Noto Serif TC', serif;
+  min-height: 100vh; overflow-x: hidden; position: relative;
+}
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(184,134,11,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 20% 100%, rgba(139,26,26,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 80% at 85% 50%, rgba(184,134,11,0.04) 0%, transparent 60%);
+  pointer-events: none; z-index: 0;
+}
+body::after {
+  content: ''; position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: 0.6;
+}
+
+.container { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; padding: 40px 24px 80px; }
+
+/* Header */
+.header { text-align: center; padding: 48px 0 40px; }
+.header-ornament { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 6px; color: var(--gold); opacity: 0.7; text-transform: uppercase; margin-bottom: 20px; }
+.header h1 { font-size: clamp(28px,6vw,46px); font-weight: 300; letter-spacing: 12px; color: var(--paper); line-height: 1.3; margin-bottom: 8px; }
+.header h1 span { color: var(--gold-light); }
+.header-subtitle { font-size: 13px; letter-spacing: 4px; color: var(--ash); font-weight: 300; }
+
+/* Steps */
+.step-nav { display: flex; gap: 8px; justify-content: center; margin-bottom: 40px; }
+.step-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(184,134,11,0.2); border: 1px solid rgba(184,134,11,0.3); transition: all 0.4s ease; }
+.step-dot.active { background: var(--gold); box-shadow: 0 0 8px rgba(184,134,11,0.6); }
+.step-dot.done   { background: rgba(184,134,11,0.5); }
+
+/* Sections */
+.section { display: none; animation: fadeIn 0.6s ease; }
+.section.active { display: block; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+
+/* Cards */
+.card {
+  background: rgba(245,237,224,0.04); border: 1px solid rgba(184,134,11,0.15);
+  border-radius: 8px; padding: 32px; margin-bottom: 24px; position: relative; overflow: hidden;
+}
+.card::before {
+  content: ''; position: absolute; top:0; left:0; right:0; height:1px;
+  background: linear-gradient(to right, transparent, rgba(184,134,11,0.4), transparent);
+}
+.card-label { font-family:'Cinzel',serif; font-size:10px; letter-spacing:4px; color:var(--gold); opacity:0.7; margin-bottom:12px; text-transform:uppercase; }
+.card h2 { font-size:18px; font-weight:400; letter-spacing:3px; color:var(--paper); margin-bottom:16px; }
+.card p  { font-size:14px; line-height:2; color:var(--smoke); font-weight:300; }
+
+.quote-block { border-left:2px solid var(--gold); padding:16px 24px; margin:0 0 40px; background:rgba(184,134,11,0.04); border-radius:0 4px 4px 0; }
+.quote-block p { font-size:14px; line-height:2; color:var(--smoke); font-weight:300; }
+.quote-block cite { display:block; font-size:12px; color:var(--gold); margin-top:8px; font-style:normal; letter-spacing:2px; }
+
+.question-field {
+  width:100%; background:rgba(255,255,255,0.03); border:1px solid rgba(184,134,11,0.2);
+  border-radius:6px; color:var(--paper); font-family:'Noto Serif TC',serif;
+  font-size:15px; letter-spacing:2px; padding:16px 20px; outline:none; resize:none; min-height:80px; transition:all 0.3s;
+}
+.question-field:focus { border-color:var(--gold); box-shadow:0 0 0 2px rgba(184,134,11,0.1); }
+.question-field::placeholder { color:rgba(155,142,122,0.35); font-size:13px; }
+
+.tip-box { display:flex; gap:12px; align-items:flex-start; padding:14px 18px; background:rgba(184,134,11,0.05); border:1px solid rgba(184,134,11,0.15); border-radius:4px; margin-top:16px; }
+.tip-icon { color:var(--gold); font-size:14px; flex-shrink:0; margin-top:1px; }
+.tip-text { font-size:12px; line-height:1.9; color:var(--ash); }
+
+/* Input page */
+.input-grid { display:grid; gap:14px; }
+.yao-row { padding:18px 20px; background:rgba(255,255,255,0.02); border:1px solid rgba(184,134,11,0.12); border-radius:6px; transition:all 0.3s ease; }
+.yao-row:hover  { border-color:rgba(184,134,11,0.3); background:rgba(184,134,11,0.03); }
+.yao-row.filled { border-color:rgba(184,134,11,0.38); background:rgba(184,134,11,0.05); }
+.yao-label { font-size:11px; letter-spacing:3px; color:var(--ash); margin-bottom:10px; }
+.yao-label span { color:var(--gold); font-size:12px; }
+.num-input {
+  background:rgba(255,255,255,0.04); border:1px solid rgba(184,134,11,0.25); border-radius:4px;
+  color:var(--paper); font-family:'Noto Serif TC',serif; font-size:22px; letter-spacing:6px;
+  padding:10px 16px; width:100%; text-align:center; transition:all 0.3s; outline:none;
+}
+.num-input:focus { border-color:var(--gold); box-shadow:0 0 0 2px rgba(184,134,11,0.15); background:rgba(184,134,11,0.04); }
+.num-input::placeholder { color:rgba(155,142,122,0.3); font-size:14px; letter-spacing:2px; }
+
+/* Buttons */
+.btn { display:inline-flex; align-items:center; gap:10px; padding:14px 32px; border:1px solid; border-radius:4px; font-family:'Noto Serif TC',serif; font-size:14px; letter-spacing:3px; cursor:pointer; transition:all 0.3s; background:none; }
+.btn-primary { border-color:var(--gold); color:var(--gold); }
+.btn-primary:hover { background:rgba(184,134,11,0.12); box-shadow:0 0 20px rgba(184,134,11,0.2); }
+.btn-ghost { border-color:rgba(155,142,122,0.3); color:var(--ash); }
+.btn-ghost:hover { border-color:rgba(155,142,122,0.6); color:var(--smoke); }
+.btn-large { padding:16px 48px; font-size:15px; }
+.btn-actions { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-top:32px; }
+
+/* Result */
+.result-header { text-align:center; padding:32px 0 28px; }
+.result-title { font-size:clamp(22px,5vw,38px); letter-spacing:8px; font-weight:300; color:var(--gold-light); margin-bottom:6px; }
+.result-subtitle { font-size:12px; letter-spacing:4px; color:var(--ash); }
+
+/* AB columns */
+.result-ab { display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start; margin-bottom:24px; }
+@media (max-width:640px) { .result-ab { grid-template-columns:1fr; } }
+
+.col-a, .col-b {
+  background:rgba(245,237,224,0.04); border:1px solid rgba(184,134,11,0.15);
+  border-radius:8px; padding:28px 24px; position:relative; overflow:hidden;
+}
+.col-a::before, .col-b::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(to right, transparent, rgba(184,134,11,0.4), transparent);
+}
+.col-label { font-family:'Cinzel',serif; font-size:10px; letter-spacing:4px; color:var(--gold); opacity:0.6; text-transform:uppercase; margin-bottom:20px; }
+
+/* Hex cards in A */
+.hex-trio { display:flex; flex-direction:column; gap:18px; }
+.hex-item { display:flex; align-items:center; gap:18px; padding:14px 16px; background:rgba(255,255,255,0.02); border:1px solid rgba(184,134,11,0.12); border-radius:6px; }
+.hex-item:hover { border-color:rgba(184,134,11,0.28); }
+.hex-item.undef { opacity:0.3; filter:grayscale(0.8); }
+
+.hex-lines { display:flex; flex-direction:column-reverse; gap:4px; align-items:center; width:52px; flex-shrink:0; }
+.hex-line { height:4px; border-radius:2px; position:relative; }
+.hex-line.yang { width:52px; background:var(--gold-light); box-shadow:0 0 5px rgba(184,134,11,0.35); }
+.hex-line.yin  { width:52px; background:transparent; display:flex; gap:6px; }
+.hex-line.yin::before, .hex-line.yin::after { content:''; flex:1; height:4px; background:#7a9eb8; border-radius:2px; }
+.hex-line .moving-marker { position:absolute; right:-18px; top:50%; transform:translateY(-50%); font-size:11px; color:var(--red-muted); pointer-events:none; }
+
+.hex-info { flex:1; }
+.hex-type-lbl { font-size:10px; letter-spacing:3px; color:var(--gold); opacity:0.6; margin-bottom:4px; font-family:'Cinzel',serif; }
+.hex-name     { font-size:20px; letter-spacing:5px; color:var(--paper); margin-bottom:2px; }
+.hex-nat      { font-size:11px; letter-spacing:2px; color:var(--ash); }
+.hex-undef-txt{ font-size:13px; color:var(--ash); letter-spacing:2px; }
+
+/* B col */
+.copy-block {
+  background:rgba(0,0,0,0.28); border:1px solid rgba(184,134,11,0.14); border-radius:6px;
+  padding:20px; font-size:14px; line-height:2.2; color:var(--smoke);
+  letter-spacing:1px; font-weight:300; white-space:pre-wrap; word-break:break-all;
+  min-height:140px; margin-bottom:14px;
+}
+.btn-copy {
+  width:100%; padding:14px; background:rgba(184,134,11,0.08); border:1px solid rgba(184,134,11,0.3);
+  border-radius:4px; color:var(--gold); font-family:'Noto Serif TC',serif; font-size:13px;
+  letter-spacing:3px; cursor:pointer; transition:all 0.3s;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.btn-copy:hover  { background:rgba(184,134,11,0.16); box-shadow:0 0 16px rgba(184,134,11,0.15); }
+.btn-copy.copied { border-color:rgba(100,180,100,0.5); color:#7ecb7e; background:rgba(100,180,100,0.06); }
+
+/* Guide */
+.guide-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin:20px 0; }
+@media (max-width:600px) { .guide-grid { grid-template-columns:1fr; } }
+.guide-item { padding:18px 16px; border:1px solid rgba(184,134,11,0.12); border-radius:6px; background:rgba(255,255,255,0.015); }
+.guide-item-title { font-size:13px; letter-spacing:2px; color:var(--gold); margin-bottom:8px; }
+.guide-item-text  { font-size:12px; line-height:1.9; color:var(--ash); font-weight:300; }
+.interp-block { padding:16px 20px; background:rgba(255,255,255,0.02); border:1px solid rgba(184,134,11,0.1); border-radius:6px; margin-top:12px; }
+.interp-label { font-size:10px; letter-spacing:3px; color:var(--gold); opacity:0.6; margin-bottom:8px; font-family:'Cinzel',serif; text-transform:uppercase; }
+.interp-text  { font-size:13px; line-height:2; color:var(--smoke); font-weight:300; }
+
+/* Ref table */
+.ref-table { width:100%; border-collapse:collapse; font-size:13px; margin:14px 0; }
+.ref-table th { text-align:left; padding:9px 12px; border-bottom:1px solid rgba(184,134,11,0.2); color:var(--gold); font-size:11px; letter-spacing:2px; font-weight:400; }
+.ref-table td { padding:9px 12px; border-bottom:1px solid rgba(255,255,255,0.04); color:var(--smoke); font-weight:300; }
+.ref-table tr:last-child td { border-bottom:none; }
+
+.restart-zone { text-align:center; padding:36px 0; border-top:1px solid rgba(184,134,11,0.1); margin-top:36px; }
+
+@keyframes glowReveal {
+  0%  { box-shadow:0 0 0 rgba(184,134,11,0); }
+  50% { box-shadow:0 0 24px rgba(184,134,11,0.18); }
+  100%{ box-shadow:0 0 0 rgba(184,134,11,0); }
+}
+.glow-anim { animation:glowReveal 1.8s ease; }
+@media (max-width:480px) { .card { padding:20px 16px; } .num-input { font-size:18px; letter-spacing:4px; } }
+
+/* 卦辭 block */
+.guaci-block {
+  padding:16px 20px;
+  background:rgba(184,134,11,0.04);
+  border-left:2px solid var(--gold);
+  border-radius:0 4px 4px 0;
+}
+.guaci-label { font-size:10px; letter-spacing:3px; color:var(--gold); opacity:0.7; margin-bottom:8px; font-family:'Cinzel',serif; text-transform:uppercase; }
+.guaci-text  { font-size:14px; line-height:2.2; color:var(--smoke); font-weight:300; }
+
+/* 爻辭 block */
+.yaoci-block {
+  padding:14px 18px;
+  background:rgba(196,83,58,0.05);
+  border-left:2px solid rgba(196,83,58,0.4);
+  border-radius:0 4px 4px 0;
+  margin-top:10px;
+}
+.yaoci-label { font-size:10px; letter-spacing:3px; color:var(--red-muted); opacity:0.8; margin-bottom:6px; font-family:'Cinzel',serif; text-transform:uppercase; }
+.yaoci-text  { font-size:13px; line-height:2; color:var(--smoke); font-weight:300; }
+
+/* 直覺欄位 */
+.intuition-field {
+  width:100%; background:rgba(255,255,255,0.03);
+  border:1px solid rgba(184,134,11,0.2); border-radius:6px;
+  color:var(--paper); font-family:'Noto Serif TC',serif;
+  font-size:14px; letter-spacing:1px; padding:14px 18px;
+  outline:none; resize:none; min-height:90px; transition:all 0.3s;
+  margin-top:12px;
+}
+.intuition-field:focus { border-color:var(--gold); box-shadow:0 0 0 2px rgba(184,134,11,0.1); }
+.intuition-field::placeholder { color:rgba(155,142,122,0.35); font-size:13px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-ornament">I Ching · Digital Oracle</div>
+  <h1>大衍之數<br><span>數字占卜</span></h1>
+  <div class="header-subtitle">大衍之數五十　其用四十有九</div>
+</div>
+
+<div class="step-nav">
+  <div class="step-dot active" id="dot0"></div>
+  <div class="step-dot" id="dot1"></div>
+  <div class="step-dot" id="dot2"></div>
+  <div class="step-dot" id="dot3"></div>
+</div>
+
+<!-- ══ SEC 0: INTRO ══ -->
+<div class="section active" id="sec0">
+  <div class="quote-block">
+    <p>《易經·繫辭》記載：「大衍之數五十，其用四十有九。」<br>
+    傳統以四十九根蓍草起卦，三變成一爻，六爻成一卦。<br>
+    此系統以兩位數字取代蓍草，保留完整的數理結構，讓占卜可隨時隨地進行。</p>
+    <cite>— 現代大衍數字占卜系統</cite>
+  </div>
+  <div class="card">
+    <div class="card-label">第一步</div>
+    <h2>靜心 · 立問</h2>
+    <p>在開始之前，請先平靜心緒，將心中的問題具體化。<br>問題越清晰，卦象的啟示也越明確。</p>
+    <br>
+    <textarea class="question-field" id="questionField"
+      placeholder="請在此寫下您的問題……（例如：此次求職機會是否適合我？）" rows="3"></textarea>
+  </div>
+  <div class="card">
+    <div class="card-label">操作說明</div>
+    <h2>如何產生數字</h2>
+    <p>您需要準備 <strong style="color:var(--gold)">六組六位數字</strong>，每組對應一個爻位。</p>
+    <div style="margin-top:8px;">
+      <p style="font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:14px;opacity:0.8;">如何產生占卜數字</p>
+      <div class="tip-box" style="margin-top:0;margin-bottom:12px;">
+        <span class="tip-icon">１</span>
+        <span class="tip-text"><strong style="color:var(--paper);letter-spacing:2px;">靜心</strong><br>沉澱下來，回到當下。<br>在心中清晰提問，或默請祝福。</span>
+      </div>
+      <div class="tip-box" style="margin-top:0;">
+        <span class="tip-icon">２</span>
+        <span class="tip-text"><strong style="color:var(--paper);letter-spacing:2px;">領受數字</strong><br>數字無須刻意挑選——<br>可以是直覺、念頭、眼前所見，或任何自然浮現的數字。<br>重點不在來源，而在你允許它出現。</span>
+      </div>
+    </div>
+  </div>
+  <div class="btn-actions">
+    <button class="btn btn-primary btn-large" onclick="goTo(1)">開始占卜 →</button>
+  </div>
+</div>
+
+<!-- ══ SEC 1: INPUT ══ -->
+<div class="section" id="sec1">
+  <div class="card">
+    <div class="card-label">輸入數字</div>
+    <h2>六組起卦數字</h2>
+    <p>每個欄位輸入六碼數字；<br>輸完一組，系統會自動進入下一組。</p>
+    <p style="margin-top:16px;font-size:13px;line-height:2;color:var(--ash);font-weight:300;letter-spacing:1px;">數字不是用來算準，<br>而是接住你此刻的位置。</p>
+  </div>
+  <div class="card">
+    <div class="input-grid" id="inputGrid"></div>
+  </div>
+  <div class="btn-actions">
+    <button class="btn btn-ghost" onclick="goTo(0)">← 返回</button>
+    <button class="btn btn-primary btn-large" onclick="goToReady()">下一步 →</button>
+  </div>
+</div>
+
+<!-- ══ SEC 2: 靜心準備 ══ -->
+<div class="section" id="sec2">
+  <div class="card" style="text-align:center;padding:48px 32px;">
+    <div class="card-label">起卦前</div>
+    <h2 style="letter-spacing:6px;margin-bottom:24px;">靜 心 · 確 認</h2>
+    <p style="max-width:420px;margin:0 auto 32px;line-height:2.2;">
+      六組數字已填入。<br><br>
+      在揭示卦象之前，請先閉上眼睛片刻——<br>
+      讓問題在心中再次清晰浮現，<br>
+      感受當下的身心狀態。
+    </p>
+    <div style="width:48px;height:1px;background:rgba(184,134,11,0.3);margin:0 auto 32px;"></div>
+    <p style="font-size:12px;letter-spacing:3px;color:var(--ash);">準備好後，再按下顯示卦象。</p>
+  </div>
+  <div class="btn-actions">
+    <button class="btn btn-ghost" onclick="goTo(1)">← 返回</button>
+    <button class="btn btn-primary btn-large" onclick="calculateAndShow()">顯示卦象 →</button>
+  </div>
+</div>
+
+<!-- ══ SEC 3: RESULT ══ -->
+<div class="section" id="sec3">
+  <div class="result-header">
+    <div id="questionDisplay" style="font-size:13px;letter-spacing:2px;color:var(--ash);margin-bottom:14px;"></div>
+    <div class="result-title" id="resultTitle">— 卦象解讀 —</div>
+    <div class="result-subtitle" id="resultSubtitle"></div>
+  </div>
+
+  <!-- 卦名匯總 -->
+  <div id="hexSummary" style="display:none;text-align:center;margin:0 0 28px;padding:18px 24px;background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.18);border-radius:10px;letter-spacing:2px;">
+    <div id="hexSummaryBen"  style="font-size:16px;color:var(--gold-light);margin-bottom:10px;font-weight:400;"></div>
+    <div id="hexSummaryHu"   style="font-size:13px;color:var(--ash);margin-bottom:6px;"></div>
+    <div id="hexSummaryBian" style="font-size:13px;color:var(--ash);"></div>
+  </div>
+
+  <div class="result-ab">
+    <div class="col-a glow-anim">
+      <div class="col-label">A · 卦象</div>
+      <div class="hex-trio" id="hexTrio"></div>
+    </div>
+    <div class="col-b">
+      <div class="col-label">B · 占卜資訊</div>
+      <div class="copy-block" id="copyBlock"></div>
+      <button class="btn-copy" id="copyBtn" onclick="copyText()">
+        <span id="copyIcon">⊕</span>
+        <span id="copyLabel">一鍵複製</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="card" id="hexReadingCard">
+    <div class="card-label">時位判讀</div>
+    <h2 id="guaciTitle">——</h2>
+    <div class="guaci-block" style="margin-bottom:14px;">
+      <div class="guaci-label">場域狀態</div>
+      <div class="guaci-text" id="fieldDesc">——</div>
+    </div>
+    <div class="guaci-block">
+      <div class="guaci-label">王弼本 · 卦辭</div>
+      <div class="guaci-text" id="guaciText">——</div>
+    </div>
+    <div id="movingYaociBlock" style="display:none;margin-top:14px;">
+      <div id="movingYaociContent"></div>
+    </div>
+  </div>
+
+  <div class="card" id="huGuaCard" style="display:none;">
+    <div class="card-label">互卦</div>
+    <h2 id="huGuaTitle">——</h2>
+    <div class="guaci-block" style="margin-bottom:14px;">
+      <div class="guaci-label">場域狀態</div>
+      <div class="guaci-text" id="huFieldDesc">——</div>
+    </div>
+    <div class="guaci-block">
+      <div class="guaci-label">王弼本 · 卦辭</div>
+      <div class="guaci-text" id="huGuaciText">——</div>
+    </div>
+    <div id="huMovingYaociContent" style="margin-top:14px;"></div>
+  </div>
+
+  <div class="card" id="bianGuaCard" style="display:none;">
+    <div class="card-label">變卦</div>
+    <h2 id="bianGuaTitle">——</h2>
+    <div class="guaci-block" style="margin-bottom:14px;">
+      <div class="guaci-label">場域狀態</div>
+      <div class="guaci-text" id="bianFieldDesc">——</div>
+    </div>
+    <div class="guaci-block">
+      <div class="guaci-label">王弼本 · 卦辭</div>
+      <div class="guaci-text" id="bianGuaciText">——</div>
+    </div>
+    <div id="bianMovingYaociContent" style="margin-top:14px;"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">您的直覺</div>
+    <h2>看到這個卦象，第一個浮現的感受是什麼？</h2>
+    <p style="font-size:13px;color:var(--ash);margin-bottom:4px;">請在傳給老師之前，先寫下您的直覺反應。這會成為解卦對話的起點。</p>
+    <textarea class="intuition-field" id="intuitionField" placeholder="我的直覺反應……" rows="4"></textarea>
+  </div>
+
+  <div class="card">
+    <div class="card-label">解讀指引</div>
+    <h2>三卦義理</h2>
+    <div class="guide-grid">
+      <div class="guide-item">
+        <div class="guide-item-title">本卦</div>
+        <div class="guide-item-text">描述當前狀況與核心問題的本質，是理解整體局勢的基礎。</div>
+      </div>
+      <div class="guide-item">
+        <div class="guide-item-title">互卦</div>
+        <div class="guide-item-text">揭示事情發展過程中的內在結構與潛在因素，是隱而不顯的影響力。</div>
+      </div>
+      <div class="guide-item">
+        <div class="guide-item-title">變卦</div>
+        <div class="guide-item-text">呈現事情的走向與最終結果，是未來可能展開的方向。</div>
+      </div>
+    </div>
+    <div class="interp-block">
+      <div class="interp-label">動爻說明</div>
+      <div class="interp-text" id="movingLineGuide"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">查卦參考</div>
+    <h2>八卦對照</h2>
+    <table class="ref-table">
+      <tr><th>三爻組合（初→上）</th><th>卦名</th><th>象意</th></tr>
+      <tr><td>陽 陽 陽</td><td>乾</td><td>天</td></tr>
+      <tr><td>陽 陽 陰</td><td>兌</td><td>澤</td></tr>
+      <tr><td>陽 陰 陽</td><td>離</td><td>火</td></tr>
+      <tr><td>陽 陰 陰</td><td>震</td><td>雷</td></tr>
+      <tr><td>陰 陽 陽</td><td>巽</td><td>風</td></tr>
+      <tr><td>陰 陽 陰</td><td>坎</td><td>水</td></tr>
+      <tr><td>陰 陰 陽</td><td>艮</td><td>山</td></tr>
+      <tr><td>陰 陰 陰</td><td>坤</td><td>地</td></tr>
+    </table>
+    <div class="tip-box">
+      <span class="tip-icon">✦</span>
+      <span class="tip-text">本卦卦辭已顯示於上方。請進一步查閱動爻（老陽○、老陰×）對應的爻辭，爻辭為解卦的關鍵訊息。</span>
+    </div>
+  </div>
+
+  <div class="restart-zone">
+    <p style="font-size:13px;letter-spacing:2px;color:var(--ash);margin-bottom:20px;">願卦象為您帶來智慧與指引</p>
+    <button class="btn btn-ghost" onclick="restart()">✦ 重新起卦</button>
+  </div>
+</div>
+
+</div>
+<script>
+const GROUP_LABELS = ['第一組數字','第二組數字','第三組數字','第四組數字','第五組數字','第六組數字'];
+const YAO_NAMES   = ['初爻','二爻','三爻','四爻','五爻','上爻'];
+const TRIGRAM_MAP = {
+  'yyy':{name:'乾',symbol:'☰',nature:'天'}, 'yyn':{name:'兌',symbol:'☱',nature:'澤'},
+  'yny':{name:'離',symbol:'☲',nature:'火'}, 'ynn':{name:'震',symbol:'☳',nature:'雷'},
+  'nyy':{name:'巽',symbol:'☴',nature:'風'}, 'nyn':{name:'坎',symbol:'☵',nature:'水'},
+  'nny':{name:'艮',symbol:'☶',nature:'山'}, 'nnn':{name:'坤',symbol:'☷',nature:'地'},
+};
+
+// 六十四卦完整對照表：key = 上卦key + 下卦key，value = {no, name}
+// 上卦在前，下卦在後
+const HEXAGRAM_MAP = {
+  'yyyyyy':{no:1,  name:'乾為天'},  'yyynnn':{no:11, name:'地天泰'},
+  'yyynyy':{no:26, name:'山天大畜'},'yyynyn':{no:5,  name:'水天需'},
+  'yyyynn':{no:34, name:'雷天大壯'},'yyynyy':{no:26, name:'山天大畜'},
+  'yyyyny':{no:9,  name:'風天小畜'},'yyyyyn':{no:43, name:'澤天夬'},
+  'yyyyny':{no:9,  name:'風天小畜'},'yyyyyy':{no:1,  name:'乾為天'},
+
+  'nnnyyy':{no:12, name:'天地否'},  'nnnnnn':{no:2,  name:'坤為地'},
+  'nnnnny':{no:23, name:'山地剝'},  'nnnnyn':{no:8,  name:'水地比'},
+  'nnnynn':{no:16, name:'雷地豫'},  'nnnnyy':{no:23, name:'山地剝'},
+  'nnnyny':{no:20, name:'風地觀'},  'nnnyny':{no:45, name:'澤地萃'},
+
+  'nnyyyy':{no:33, name:'天山遯'},  'nnynnn':{no:15, name:'地山謙'},
+  'nnynny':{no:52, name:'艮為山'},  'nnynyn':{no:39, name:'水山蹇'},
+  'nnynn' :{no:62, name:'雷山小過'}, 'nnynyy':{no:52, name:'艮為山'},
+  'nnyyy' :{no:53, name:'風山漸'},  'nnyyny':{no:31, name:'澤山咸'},
+
+  'nynyyy':{no:6,  name:'天水訟'},  'nynnnn':{no:7,  name:'地水師'},
+  'nynnny':{no:4,  name:'山水蒙'},  'nynnyn':{no:29, name:'坎為水'},
+  'nynynn':{no:40, name:'雷水解'},  'nynnyy':{no:4,  name:'山水蒙'},
+  'nynyny':{no:59, name:'風水渙'},  'nynyny':{no:47, name:'澤水困'},
+
+  'ynnyyy':{no:25, name:'天雷無妄'},'ynnnnn':{no:24, name:'地雷復'},
+  'ynnnny':{no:27, name:'山雷頤'},  'ynnnyn':{no:3,  name:'水雷屯'},
+  'ynnynn':{no:51, name:'震為雷'},  'ynnnyy':{no:27, name:'山雷頤'},
+  'ynnyny':{no:42, name:'風雷益'},  'ynnyny':{no:17, name:'澤雷隨'},
+
+  'nyyyyy':{no:44, name:'天風姤'},  'nyynnn':{no:46, name:'地風升'},
+  'nyynny':{no:18, name:'山風蠱'},  'nyynyn':{no:48, name:'井水風'},
+  'nyyynn':{no:32, name:'雷風恆'},  'nyynyy':{no:18, name:'山風蠱'},
+  'nyyyy' :{no:57, name:'巽為風'},  'nyyyny':{no:28, name:'澤風大過'},
+
+  'ynyyyy':{no:13, name:'天火同人'},'ynynnn':{no:36, name:'地火明夷'},
+  'ynynny':{no:22, name:'山火賁'},  'ynynyn':{no:63, name:'水火既濟'},
+  'ynyynn':{no:55, name:'雷火豐'},  'ynynyy':{no:22, name:'山火賁'},
+  'ynyyy' :{no:37, name:'風火家人'},'ynyyny':{no:49, name:'澤火革'},
+
+  'yynyyy':{no:10, name:'天澤履'},  'yynnnn':{no:19, name:'地澤臨'},
+  'yynnny':{no:41, name:'山澤損'},  'yynnyn':{no:60, name:'水澤節'},
+  'yynynn':{no:54, name:'雷澤歸妹'},'yynnyy':{no:41, name:'山澤損'},
+  'yynyny':{no:61, name:'風澤中孚'},'yynyny':{no:58, name:'兌為澤'},
+};
+
+// 完整版（覆蓋所有64卦，key=上卦+下卦，上卦=lines[3,4,5]，下卦=lines[0,1,2]）
+// H64：key = 上卦key(lines[3,4,5]) + 下卦key(lines[0,1,2])，與Python引擎v2.4完全對齊
+const H64 = {
+  'yyyyyy':{no:1,name:'乾為天'},
+  'nnnnnn':{no:2,name:'坤為地'},
+  'nynynn':{no:3,name:'水雷屯'},
+  'nnynyn':{no:4,name:'山水蒙'},
+  'nynyyy':{no:5,name:'水天需'},
+  'yyynyn':{no:6,name:'天水訟'},
+  'nnnnyn':{no:7,name:'地水師'},
+  'nynnnn':{no:8,name:'水地比'},
+  'nyyyyy':{no:9,name:'風天小畜'},
+  'yyyyyn':{no:10,name:'天澤履'},
+  'nnnyyy':{no:11,name:'地天泰'},
+  'yyynnn':{no:12,name:'天地否'},
+  'yyyyny':{no:13,name:'天火同人'},
+  'ynyyyy':{no:14,name:'火天大有'},
+  'nnnnny':{no:15,name:'地山謙'},
+  'ynnnnn':{no:16,name:'雷地豫'},
+  'yynynn':{no:17,name:'澤雷隨'},
+  'nnynyy':{no:18,name:'山風蠱'},
+  'nnnyyn':{no:19,name:'地澤臨'},
+  'nyynnn':{no:20,name:'風地觀'},
+  'ynyynn':{no:21,name:'火雷噬嗑'},
+  'nnyyny':{no:22,name:'山火賁'},
+  'nnynnn':{no:23,name:'山地剝'},
+  'nnnynn':{no:24,name:'地雷復'},
+  'yyyynn':{no:25,name:'天雷无妄'},
+  'nnyyyy':{no:26,name:'山天大畜'},
+  'nnyynn':{no:27,name:'山雷頤'},
+  'yynnyy':{no:28,name:'澤風大過'},
+  'nynnyn':{no:29,name:'坎為水'},
+  'ynyyny':{no:30,name:'離為火'},
+  'yynnny':{no:31,name:'澤山咸'},
+  'ynnnyy':{no:32,name:'雷風恒'},
+  'yyynny':{no:33,name:'天山遯'},
+  'ynnyyy':{no:34,name:'雷天大壯'},
+  'ynynnn':{no:35,name:'火地晉'},
+  'nnnyny':{no:36,name:'地火明夷'},
+  'nyyyny':{no:37,name:'風火家人'},
+  'ynyyyn':{no:38,name:'火澤睽'},
+  'nynnny':{no:39,name:'水山蹇'},
+  'ynnnyn':{no:40,name:'雷水解'},
+  'nnyyyn':{no:41,name:'山澤損'},
+  'nyyynn':{no:42,name:'風雷益'},
+  'yynyyy':{no:43,name:'澤天夬'},
+  'yyynyy':{no:44,name:'天風姤'},
+  'yynnnn':{no:45,name:'澤地萃'},
+  'nnnnyy':{no:46,name:'地風升'},
+  'yynnyn':{no:47,name:'澤水困'},
+  'nynnyy':{no:48,name:'水風井'},
+  'yynyny':{no:49,name:'澤火革'},
+  'ynynyy':{no:50,name:'火風鼎'},
+  'ynnynn':{no:51,name:'震為雷'},
+  'nnynny':{no:52,name:'艮為山'},
+  'nyynny':{no:53,name:'風山漸'},
+  'ynnyyn':{no:54,name:'雷澤歸妹'},
+  'ynnyny':{no:55,name:'雷火豐'},
+  'ynynny':{no:56,name:'火山旅'},
+  'nyynyy':{no:57,name:'巽為風'},
+  'yynyyn':{no:58,name:'兌為澤'},
+  'nyynyn':{no:59,name:'風水渙'},
+  'nynyyn':{no:60,name:'水澤節'},
+  'nyyyyn':{no:61,name:'風澤中孚'},
+  'ynnnny':{no:62,name:'雷山小過'},
+  'nynyny':{no:63,name:'水火既濟'},
+  'ynynyn':{no:64,name:'火水未濟'}
+};
+
+function getHexagram(upperKey, lowerKey) {
+  return H64[upperKey + lowerKey] || null;
+}
+
+// 王弼本六十四卦卦辭（以卦序為key）
+const GUACI = {
+  1: '元，亨，利，貞。',
+  2: '元亨，利牝馬之貞。君子有攸往，先迷後得主，利。西南得朋，東北喪朋。安貞吉。',
+  3: '元亨，利貞，勿用有攸往，利建侯。',
+  4: '亨。匪我求童蒙，童蒙求我。初筮告，再三瀆，瀆則不告。利貞。',
+  5: '有孚，光亨，貞吉。利涉大川。',
+  6: '有孚，窒惕，中吉，終凶。利見大人，不利涉大川。',
+  7: '貞，丈人吉，無咎。',
+  8: '吉。原筮，元永貞，無咎。不寧方來，後夫凶。',
+  9: '亨。密雲不雨，自我西郊。',
+  10: '履虎尾，不咥人，亨。',
+  11: '小往大來，吉亨。',
+  12: '否之匪人，不利君子貞，大往小來。',
+  13: '同人于野，亨。利涉大川，利君子貞。',
+  14: '元亨。',
+  15: '亨，君子有終。',
+  16: '利建侯行師。',
+  17: '元亨，利貞，無咎。',
+  18: '元亨，利涉大川。先甲三日，後甲三日。',
+  19: '元亨，利貞。至于八月有凶。',
+  20: '盥而不薦，有孚顒若。',
+  21: '亨，利用獄。',
+  22: '亨，小利有攸往。',
+  23: '不利有攸往。',
+  24: '亨。出入無疾，朋來無咎。反復其道，七日來復，利有攸往。',
+  25: '元亨，利貞。其匪正有眚，不利有攸往。',
+  26: '利貞，不家食吉，利涉大川。',
+  27: '貞吉。觀頤，自求口實。',
+  28: '棟橈，利有攸往，亨。',
+  29: '有孚，維心亨，行有尚。',
+  30: '利貞，亨。畜牝牛，吉。',
+  31: '亨，利貞，取女吉。',
+  32: '亨，無咎，利貞，利有攸往。',
+  33: '亨，小利貞。',
+  34: '利貞。',
+  35: '康侯用錫馬蕃庶，晝日三接。',
+  36: '利艱貞。',
+  37: '利女貞。',
+  38: '小事吉。',
+  39: '利西南，不利東北。利見大人，貞吉。',
+  40: '利西南，無所往，其來復吉。有攸往，夙吉。',
+  41: '有孚，元吉，無咎，可貞，利有攸往。曷之用？二簋可用享。',
+  42: '利有攸往，利涉大川。',
+  43: '揚于王庭，孚號，有厲。告自邑，不利即戎，利有攸往。',
+  44: '女壯，勿用取女。',
+  45: '亨。王假有廟，利見大人，亨，利貞。用大牲吉，利有攸往。',
+  46: '元亨，用見大人，勿恤，南征吉。',
+  47: '亨，貞，大人吉，無咎，有言不信。',
+  48: '改邑不改井，無喪無得，往來井井。汔至，亦未繘井，羸其瓶，凶。',
+  49: '己日乃孚，元亨，利貞，悔亡。',
+  50: '元吉，亨。',
+  51: '亨。震來虩虩，笑言啞啞。震驚百里，不喪匕鬯。',
+  52: '艮其背，不獲其身，行其庭，不見其人，無咎。',
+  53: '女歸吉，利貞。',
+  54: '征凶，無攸利。',
+  55: '亨，王假之，勿憂，宜日中。',
+  56: '小亨，旅貞吉。',
+  57: '小亨，利有攸往，利見大人。',
+  58: '亨，利貞。',
+  59: '亨，王假有廟，利涉大川，利貞。',
+  60: '亨，苦節不可貞。',
+  61: '豚魚吉，利涉大川，利貞。',
+  62: '亨，利貞，可小事，不可大事。飛鳥遺之音，不宜上，宜下，大吉。',
+  63: '亨，小利貞，初吉終亂。',
+  64: '亨，小狐汔濟，濡其尾，無攸利。'
+};
+
+const YAOCI = {
+  1: ["初九：潛龍，勿用。", "九二：見龍在田，利見大人。", "九三：君子終日乾乾，夕惕若，厲，無咎。", "九四：或躍在淵，無咎。", "九五：飛龍在天，利見大人。", "上九：亢龍有悔。"],
+  2: ["初六：履霜，堅冰至。", "六二：直、方、大，不習，無不利。", "六三：含章可貞，或從王事，無成有終。", "六四：括囊，無咎無譽。", "六五：黃裳，元吉。", "上六：龍戰於野，其血玄黃。"],
+  3: ["初九：磐桓，利居貞，利建侯。", "六二：屯如邅如，乘馬班如，匪寇婚媾，女子貞不字，十年乃字。", "六三：即鹿無虞，惟入於林中，君子幾不如舍，往吝。", "六四：乘馬班如，求婚媾，往吉，無不利。", "九五：屯其膏，小貞吉，大貞凶。", "上六：乘馬班如，泣血漣如。"],
+  4: ["初六：發蒙，利用刑人，用說桎梏，以往吝。", "九二：包蒙吉，納婦吉，子克家。", "六三：勿用取女，見金夫，不有躬，無攸利。", "六四：困蒙，吝。", "六五：童蒙，吉。", "上九：擊蒙，不利為寇，利御寇。"],
+  5: ["初九：需于郊，利用恆，無咎。", "九二：需于沙，小有言，終吉。", "九三：需于泥，致寇至。", "六四：需于血，出自穴。", "九五：需于酒食，貞吉。", "上六：入于穴，有不速之客三人來，敬之終吉。"],
+  6: ["初六：不永所事，小有言，終吉。", "九二：不克訟，歸而逋，其邑人三百戶，無眚。", "六三：食舊德，貞厲，終吉，或從王事，無成。", "九四：不克訟，復即命渝，安貞吉。", "九五：訟，元吉。", "上九：或錫之鞶帶，終朝三褫之。"],
+  7: ["初六：師出以律，否臧凶。", "九二：在師，中吉，無咎，王三錫命。", "六三：師或輿尸，凶。", "六四：師左次，無咎。", "六五：田有禽，利執言，無咎，長子帥師，弟子輿尸，貞凶。", "上六：大君有命，開國承家，小人勿用。"],
+  8: ["初六：有孚比之，無咎，有孚盈缶，終來有它吉。", "六二：比之自內，貞吉。", "六三：比之匪人。", "六四：外比之，貞吉。", "九五：顯比，王用三驅，失前禽，邑人不誡，吉。", "上六：比之無首，凶。"],
+  9: ["初九：復自道，何其咎，吉。", "九二：牽復，吉。", "九三：輿說輻，夫妻反目。", "六四：有孚，血去惕出，無咎。", "九五：有孚攣如，富以其鄰。", "上九：既雨既處，尚德載，婦貞厲，月幾望，君子征凶。"],
+  10: ["初九：素履往，無咎。", "九二：履道坦坦，幽人貞吉。", "六三：眇能視，跛能履，履虎尾，咥人凶，武人為于大君。", "九四：履虎尾，愬愬終吉。", "九五：夬履，貞厲。", "上九：視履考祥，其旋元吉。"],
+  11: ["初九：拔茅茹，以其彙，征吉。", "九二：包荒，用馮河，不遐遺，朋亡，得尚于中行。", "九三：無平不陂，無往不復，艱貞無咎，勿恤其孚，于食有福。", "六四：翩翩，不富以其鄰，不戒以孚。", "六五：帝乙歸妹，以祉元吉。", "上六：城復于隍，勿用師，自邑告命，貞吝。"],
+  12: ["初六：拔茅茹，以其彙，貞吉亨。", "六二：包承，小人吉，大人否亨。", "六三：包羞。", "九四：有命無咎，疇離祉。", "九五：休否，大人吉，其亡其亡，繫于苞桑。", "上九：傾否，先否後喜。"],
+  13: ["初九：同人于門，無咎。", "六二：同人于宗，吝。", "九三：伏戎于莽，升其高陵，三歲不興。", "九四：乘其墉，弗克攻，吉。", "九五：同人先號咷而後笑，大師克相遇。", "上九：同人于郊，無悔。"],
+  14: ["初九：無交害，匪咎，艱則無咎。", "九二：大車以載，有攸往，無咎。", "九三：公用亨于天子，小人弗克。", "九四：匪其彭，無咎。", "六五：厥孚交如，威如，吉。", "上九：自天祐之，吉無不利。"],
+  15: ["初六：謙謙君子，用涉大川，吉。", "六二：鳴謙，貞吉。", "九三：勞謙，君子有終，吉。", "六四：無不利，撝謙。", "六五：不富以其鄰，利用侵伐，無不利。", "上六：鳴謙，利用行師，征邑國。"],
+  16: ["初六：鳴豫，凶。", "六二：介于石，不終日，貞吉。", "六三：盱豫悔，遲有悔。", "九四：由豫，大有得，勿疑，朋盍簪。", "六五：貞疾，恆不死。", "上六：冥豫，成有渝，無咎。"],
+  17: ["初九：官有渝，貞吉，出門交有功。", "六二：係小子，失丈夫。", "六三：係丈夫，失小子，隨有求得，利居貞。", "九四：隨有獲，貞凶，有孚在道，以明，何咎。", "九五：孚于嘉，吉。", "上六：拘係之，乃從維之，王用亨于西山。"],
+  18: ["初六：幹父之蠱，有子，考無咎，厲終吉。", "九二：幹母之蠱，不可貞。", "九三：幹父之蠱，小有悔，無大咎。", "六四：裕父之蠱，往見吝。", "六五：幹父之蠱，用譽。", "上九：不事王侯，高尚其事。"],
+  19: ["初九：咸臨，貞吉。", "九二：咸臨，吉，無不利。", "六三：甘臨，無攸利，既憂之，無咎。", "六四：至臨，無咎。", "六五：知臨，大君之宜，吉。", "上六：敦臨，吉，無咎。"],
+  20: ["初六：童觀，小人無咎，君子吝。", "六二：闚觀，利女貞。", "六三：觀我生，進退。", "六四：觀國之光，利用賓于王。", "九五：觀我生，君子無咎。", "上九：觀其生，君子無咎。"],
+  21: ["初九：屨校滅趾，無咎。", "六二：噬膚滅鼻，無咎。", "六三：噬腊肉，遇毒，小吝，無咎。", "九四：噬乾胏，得金矢，利艱貞，吉。", "六五：噬乾肉，得黃金，貞厲，無咎。", "上九：何校滅耳，凶。"],
+  22: ["初九：賁其趾，舍車而徒。", "六二：賁其須。", "九三：賁如濡如，永貞吉。", "六四：賁如皤如，白馬翰如，匪寇婚媾。", "六五：賁于丘園，束帛戔戔，吝，終吉。", "上九：白賁，無咎。"],
+  23: ["初六：剝床以足，蔑貞，凶。", "六二：剝床以辨，蔑貞，凶。", "六三：剝之，無咎。", "六四：剝床以膚，凶。", "六五：貫魚，以宮人寵，無不利。", "上九：碩果不食，君子得輿，小人剝廬。"],
+  24: ["初九：不遠復，無祗悔，元吉。", "六二：休復，吉。", "六三：頻復，厲，無咎。", "六四：中行獨復。", "六五：敦復，無悔。", "上六：迷復，凶，有災眚，用行師，終有大敗，以其國君凶，至于十年不克征。"],
+  25: ["初九：無妄，往吉。", "六二：不耕獲，不菑畬，則利有攸往。", "六三：無妄之災，或繫之牛，行人之得，邑人之災。", "九四：可貞，無咎。", "九五：無妄之疾，勿藥有喜。", "上九：無妄，行有眚，無攸利。"],
+  26: ["初九：有厲，利已。", "九二：輿說輹。", "九三：良馬逐，利艱貞，曰閑輿衛，利有攸往。", "六四：童牛之牿，元吉。", "六五：豶豕之牙，吉。", "上九：何天之衢，亨。"],
+  27: ["初九：舍爾靈龜，觀我朵頤，凶。", "六二：顛頤，拂經，于丘頤，征凶。", "六三：拂頤，貞凶，十年勿用，無攸利。", "六四：顛頤，吉，虎視眈眈，其欲逐逐，無咎。", "六五：拂經，居貞吉，不可涉大川。", "上九：由頤，厲吉，利涉大川。"],
+  28: ["初六：藉用白茅，無咎。", "九二：枯楊生稊，老夫得其女妻，無不利。", "九三：棟橈，凶。", "九四：棟隆，吉，有它吝。", "九五：枯楊生華，老婦得其士夫，無咎無譽。", "上六：過涉滅頂，凶，無咎。"],
+  29: ["初六：習坎，入于坎窞，凶。", "九二：坎有險，求小得。", "六三：來之坎坎，險且枕，入于坎窞，勿用。", "六四：樽酒簋貳，用缶，納約自牖，終無咎。", "九五：坎不盈，祗既平，無咎。", "上六：係用徽纆，寘于叢棘，三歲不得，凶。"],
+  30: ["初九：履錯然，敬之，無咎。", "六二：黃離，元吉。", "九三：日昃之離，不鼓缶而歌，則大耋之嗟，凶。", "九四：突如其來如，焚如，死如，棄如。", "六五：出涕沱若，戚嗟若，吉。", "上九：王用出征，有嘉折首，獲匪其醜，無咎。"],
+  31: ["初六：咸其拇。", "六二：咸其腓，凶，居吉。", "九三：咸其股，執其隨，往吝。", "九四：貞吉，悔亡，憧憧往來，朋從爾思。", "九五：咸其脢，無悔。", "上六：咸其輔頰舌。"],
+  32: ["初六：浚恆，貞凶，無攸利。", "九二：悔亡。", "九三：不恆其德，或承之羞，貞吝。", "九四：田無禽。", "六五：恆其德，貞，婦人吉，夫子凶。", "上六：振恆，凶。"],
+  33: ["初六：遯尾，厲，勿用有攸往。", "六二：執之用黃牛之革，莫之勝說。", "九三：係遯，有疾厲，畜臣妾吉。", "九四：好遯，君子吉，小人否。", "九五：嘉遯，貞吉。", "上九：肥遯，無不利。"],
+  34: ["初九：壯于趾，征凶，有孚。", "九二：貞吉。", "九三：小人用壯，君子用罔，貞厲，羝羊觸藩，羸其角。", "九四：貞吉，悔亡，藩決不羸，壯于大輿之輹。", "六五：喪羊于易，無悔。", "上六：羝羊觸藩，不能退，不能遂，無攸利，艱則吉。"],
+  35: ["初六：晉如摧如，貞吉，罔孚，裕無咎。", "六二：晉如愁如，貞吉，受茲介福，于其王母。", "六三：眾允，悔亡。", "九四：晉如鼫鼠，貞厲。", "六五：悔亡，失得勿恤，往吉，無不利。", "上九：晉其角，維用伐邑，厲吉，無咎，貞吝。"],
+  36: ["初九：明夷于飛，垂其翼，君子于行，三日不食，有攸往，主人有言。", "六二：明夷，夷于左股，用拯馬壯，吉。", "九三：明夷于南狩，得其大首，不可疾貞。", "六四：入于左腹，獲明夷之心，于出門庭。", "六五：箕子之明夷，利貞。", "上六：不明晦，初登于天，後入于地。"],
+  37: ["初九：閑有家，悔亡。", "六二：無攸遂，在中饋，貞吉。", "九三：家人嗃嗃，悔厲吉，婦子嘻嘻，終吝。", "六四：富家，大吉。", "九五：王假有家，勿恤，吉。", "上九：有孚威如，終吉。"],
+  38: ["初九：悔亡，喪馬勿逐，自復，見惡人，無咎。", "九二：遇主于巷，無咎。", "六三：見輿曳，其牛掣，其人天且劓，無初有終。", "九四：睽孤，遇元夫，交孚，厲無咎。", "六五：悔亡，厥宗噬膚，往何咎。", "上九：睽孤，見豕負塗，載鬼一車，先張之弧，後說之弧，匪寇婚媾，往遇雨則吉。"],
+  39: ["初六：往蹇，來譽。", "六二：王臣蹇蹇，匪躬之故。", "九三：往蹇，來反。", "六四：往蹇，來連。", "九五：大蹇，朋來。", "上六：往蹇，來碩，吉，利見大人。"],
+  40: ["初六：無咎。", "九二：田獲三狐，得黃矢，貞吉。", "六三：負且乘，致寇至，貞吝。", "九四：解而拇，朋至斯孚。", "六五：君子維有解，吉，有孚于小人。", "上六：公用射隼于高墉之上，獲之，無不利。"],
+  41: ["初九：已事遄往，無咎，酌損之。", "九二：利貞，征凶，弗損益之。", "六三：三人行，則損一人；一人行，則得其友。", "六四：損其疾，使遄有喜，無咎。", "六五：或益之十朋之龜，弗克違，元吉。", "上九：弗損益之，無咎，貞吉，利有攸往，得臣無家。"],
+  42: ["初九：利用為大作，元吉，無咎。", "六二：或益之十朋之龜，弗克違，永貞吉，王用享于帝，吉。", "六三：益之用凶事，無咎，有孚中行，告公用圭。", "六四：中行，告公從，利用為依遷國。", "九五：有孚惠心，勿問，元吉，有孚惠我德。", "上九：莫益之，或擊之，立心勿恆，凶。"],
+  43: ["初九：壯于前趾，往不勝，為咎。", "九二：惕號，莫夜有戎，勿恤。", "九三：壯于頄，有凶，君子夬夬，獨行遇雨，若濡，有慍，無咎。", "九四：臀無膚，其行次且，牽羊悔亡，聞言不信。", "九五：莧陸夬夬，中行無咎。", "上六：無號，終有凶。"],
+  44: ["初六：繫于金柅，貞吉，有攸往，見凶，羸豕孚蹢躅。", "九二：包有魚，無咎，不利賓。", "九三：臀無膚，其行次且，厲，無大咎。", "九四：包無魚，起凶。", "九五：以杞包瓜，含章，有隕自天。", "上九：姤其角，吝，無咎。"],
+  45: ["初六：有孚不終，乃亂乃萃，若號，一握為笑，勿恤，往無咎。", "六二：引吉，無咎，孚乃利用禴。", "六三：萃如嗟如，無攸利，往無咎，小吝。", "九四：大吉，無咎。", "九五：萃有位，無咎，匪孚，元永貞，悔亡。", "上六：齎咨涕洟，無咎。"],
+  46: ["初六：允升，大吉。", "九二：孚乃利用禴，無咎。", "九三：升虛邑。", "六四：王用亨于岐山，吉，無咎。", "六五：貞吉，升階。", "上六：冥升，利于不息之貞。"],
+  47: ["初六：臀困于株木，入于幽谷，三歲不覿。", "九二：困于酒食，朱紱方來，利用享祀，征凶，無咎。", "六三：困于石，據于蒺藜，入于其宮，不見其妻，凶。", "九四：來徐徐，困于金車，吝，有終。", "九五：劓刖，困于赤紱，乃徐有說，利用祭祀。", "上六：困于葛藟，于臲卼，曰動悔，有悔，征吉。"],
+  48: ["初六：井泥不食，舊井無禽。", "九二：井谷射鮒，甕敝漏。", "九三：井渫不食，為我心惻，可用汲，王明，並受其福。", "六四：井甃，無咎。", "九五：井洌，寒泉食。", "上六：井收勿幕，有孚，元吉。"],
+  49: ["初九：鞏用黃牛之革。", "六二：己日乃革之，征吉，無咎。", "九三：征凶，貞厲，革言三就，有孚。", "九四：悔亡，有孚改命，吉。", "九五：大人虎變，未占有孚。", "上六：君子豹變，小人革面，征凶，居貞吉。"],
+  50: ["初六：鼎顛趾，利出否，得妾以其子，無咎。", "九二：鼎有實，我仇有疾，不我能即，吉。", "九三：鼎耳革，其行塞，雉膏不食，方雨虧悔，終吉。", "九四：鼎折足，覆公餗，其形渥，凶。", "六五：鼎黃耳金鉉，利貞。", "上九：鼎玉鉉，大吉，無不利。"],
+  51: ["初九：震來虩虩，後笑言啞啞，吉。", "六二：震來厲，億喪貝，躋于九陵，勿逐，七日得。", "六三：震蘇蘇，震行無眚。", "九四：震遂泥。", "六五：震往來厲，億無喪，有事。", "上六：震索索，視矍矍，征凶，震不于其躬，于其鄰，無咎，婚媾有言。"],
+  52: ["初六：艮其趾，無咎，利永貞。", "六二：艮其腓，不拯其隨，其心不快。", "九三：艮其限，列其夤，厲薰心。", "六四：艮其身，無咎。", "六五：艮其輔，言有序，悔亡。", "上九：敦艮，吉。"],
+  53: ["初六：鴻漸于干，小子厲，有言，無咎。", "六二：鴻漸于磐，飲食衎衎，吉。", "九三：鴻漸于陸，夫征不復，婦孕不育，凶，利禦寇。", "六四：鴻漸于木，或得其桷，無咎。", "九五：鴻漸于陵，婦三歲不孕，終莫之勝，吉。", "上九：鴻漸于逵，其羽可用為儀，吉。"],
+  54: ["初九：歸妹以娣，跛能履，征吉。", "九二：眇能視，利幽人之貞。", "六三：歸妹以須，反歸以娣。", "九四：歸妹愆期，遲歸有時。", "六五：帝乙歸妹，其君之袂不如其娣之袂良，月幾望，吉。", "上六：女承筐無實，士刲羊無血，無攸利。"],
+  55: ["初九：遇其配主，雖旬無咎，往有尚。", "六二：豐其蔀，日中見斗，往得疑疾，有孚發若，吉。", "九三：豐其沛，日中見沫，折其右肱，無咎。", "九四：豐其蔀，日中見斗，遇其夷主，吉。", "六五：來章，有慶譽，吉。", "上六：豐其屋，蔀其家，闚其戶，闃其無人，三歲不覿，凶。"],
+  56: ["初六：旅瑣瑣，斯其所取災。", "六二：旅即次，懷其資，得童僕貞。", "九三：旅焚其次，喪其童僕，貞厲。", "九四：旅于處，得其資斧，我心不快。", "六五：射雉一矢亡，終以譽命。", "上九：鳥焚其巢，旅人先笑後號咷，喪牛于易，凶。"],
+  57: ["初六：進退，利武人之貞。", "九二：巽在床下，用史巫紛若，吉，無咎。", "九三：頻巽，吝。", "六四：悔亡，田獲三品。", "九五：貞吉，悔亡，無不利，無初有終，先庚三日，後庚三日，吉。", "上九：巽在床下，喪其資斧，貞凶。"],
+  58: ["初九：和兌，吉。", "九二：孚兌，吉，悔亡。", "六三：來兌，凶。", "九四：商兌未寧，介疾有喜。", "九五：孚于剝，有厲。", "上六：引兌。"],
+  59: ["初六：用拯馬壯，吉。", "九二：渙奔其機，悔亡。", "六三：渙其躬，無悔。", "六四：渙其群，元吉，渙有丘，匪夷所思。", "九五：渙汗其大號，渙王居，無咎。", "上九：渙其血，去逖出，無咎。"],
+  60: ["初九：不出戶庭，無咎。", "九二：不出門庭，凶。", "六三：不節若，則嗟若，無咎。", "六四：安節，亨。", "九五：甘節，吉，往有尚。", "上六：苦節，貞凶，悔亡。"],
+  61: ["初九：虞吉，有它不燕。", "九二：鳴鶴在陰，其子和之，我有好爵，吾與爾靡之。", "六三：得敵，或鼓或罷，或泣或歌。", "六四：月幾望，馬匹亡，無咎。", "九五：有孚攣如，無咎。", "上九：翰音登于天，貞凶。"],
+  62: ["初六：飛鳥以凶。", "六二：過其祖，遇其妣，不及其君，遇其臣，無咎。", "九三：弗過防之，從或戕之，凶。", "九四：無咎，弗過遇之，往厲必戒，勿用，永貞。", "六五：密雲不雨，自我西郊，公弋取彼在穴。", "上六：弗遇過之，飛鳥離之，凶，是謂災眚。"],
+  63: ["初九：曳其輪，濡其尾，無咎。", "六二：婦喪其茀，勿逐，七日得。", "九三：高宗伐鬼方，三年克之，小人勿用。", "六四：繻有衣袽，終日戒。", "九五：東鄰殺牛，不如西鄰之禴祭，實受其福。", "上六：濡其首，厲。"],
+  64: ["初六：濡其尾，吝。", "九二：曳其輪，貞吉。", "六三：未濟，征凶，利涉大川。", "九四：貞吉，悔亡，震用伐鬼方，三年有賞于大國。", "六五：貞吉，無悔，君子之光，有孚，吉。", "上九：有孚于飲酒，無咎，濡其首，有孚失是。"],
+};
+
+const FIELD_DESC = {
+  1: '天行健，自強不息。能量純陽，全力前進之時。',
+  2: '地勢坤，厚德載物。順應承載，靜待時機之時。',
+  3: '萬物初生，艱難中蘊含生機，宜立基穩固。',
+  4: '蒙昧待啟，需以謙遜之心接受引導與教化。',
+  5: '等待時機，蓄積能量，信心守正終得所需。',
+  6: '爭訟之象，內外不和，宜尋中道化解衝突。',
+  7: '統籌調度，以紀律與威信帶領集體向前。',
+  8: '親比聚合，主動尋求盟友與歸屬之時。',
+  9: '小有積累，以柔韌之力蓄勢，不宜強行突破。',
+  10: '謹慎履行，踏實而行方能化險為夷。',
+  11: '天地交泰，上下通達，萬事順暢亨通之時。',
+  12: '天地閉塞，氣機不通，宜守靜待變。',
+  13: '同心協力，開誠布公，與人聯合共謀大事。',
+  14: '大有豐收，資源充沛，以謙德守住豐盛成果。',
+  15: '謙遜內斂，才德充盈於內，不張揚自顯。',
+  16: '順勢而動，振奮人心，以樂動之道激發行動。',
+  17: '隨順時勢，靈活應變，跟隨當下最有利的方向。',
+  18: '積弊待除，承擔責任，整頓修復舊有問題。',
+  19: '積極臨事，主動出擊，時機正向，宜大步前進。',
+  20: '靜觀其變，以觀察與省思作為當下核心行動。',
+  21: '噬合障礙，果斷處理阻礙，穿透困難找到出路。',
+  22: '修飾表達，注重形式與美感，以文飾彰顯本質。',
+  23: '剝落瓦解，舊有結構崩解，靜守待新機萌發。',
+  24: '一陽復始，轉機初現，回歸本源重新出發。',
+  25: '無妄純正，順應自然，不強求、不妄動。',
+  26: '大力蓄積，以德養能，厚積薄發之時。',
+  27: '頤養正道，節制飲食言行，關注自我滋養方式。',
+  28: '大過承壓，承受超常之重，尋找支撐點與出路。',
+  29: '重重險阻，以信心與智慧穿越重複出現的困境。',
+  30: '附麗光明，依附正確方向，以明辨之心照亮前路。',
+  31: '感應交流，以開放虛懷感受他人，建立真實連結。',
+  32: '恆久持守，穩定持續，長遠之道在於不輕易改變。',
+  33: '適時退遯，知進退之道，以退為進保存實力。',
+  34: '剛健壯大，力量充沛，但需防過剛易折之險。',
+  35: '晉升前進，光明上升，積極展現自我爭取認可。',
+  36: '明夷晦光，在黑暗壓制中保護內在光明。',
+  37: '家道正位，修齊內部，從最親近的關係開始整頓。',
+  38: '乖違對立，差異顯現，在衝突中尋找共同之處。',
+  39: '蹇難當前，前路艱阻，宜靜守待援、迂迴前進。',
+  40: '解除困難，障礙鬆動，趁機迅速化解積累的問題。',
+  41: '損下益上，適度捨棄，以誠信之心做必要的減法。',
+  42: '益下增上，資源擴展，把握難得的增益良機。',
+  43: '決斷去除，以正道公開揭示，果斷清除陰柔之弊。',
+  44: '陰柔初現，防微杜漸，警惕看似微小的潛在影響。',
+  45: '萃聚凝合，人心凝聚，藉由儀式與共識強化集體。',
+  46: '升進積累，一步一步向上，持續積累終達高位。',
+  47: '困頓受限，資源匱乏，守住本心靜待困境解除。',
+  48: '井養不竭，深耕資源，滋養他人的同時不忘維護根基。',
+  49: '革除舊制，時機成熟，以信服眾、徹底變革更新。',
+  50: '鼎新烹化，轉化舊有，以新的形式承載更高的價值。',
+  51: '震動驚醒，在衝擊與震盪中保持內心的平靜。',
+  52: '靜止守篤，適時停止，沉澱內心，不妄動。',
+  53: '漸進有序，一步一步循序推進，不急不躁。',
+  54: '歸從依附，在次要位置中找到自身的定位與價值。',
+  55: '豐盛盛極，光明與行動並進，當下正值能量充沛的高峰。',
+  56: '旅行客居，處於過渡與流動之中，謹慎保持輕靈。',
+  57: '巽入滲透，以柔順之風貫入，持續滲透達成目標。',
+  58: '喜悅兌現，以真誠的喜悅感染他人，開放交流。',
+  59: '渙散解凝，打散固結的障礙，疏通流動重新整合。',
+  60: '節制適度，設定界限，在適當的約束中找到平衡。',
+  61: '中孚誠信，以真誠感通內外，信任是當下的核心力量。',
+  62: '小過微調，在細節與小事上用心，不宜大動作。',
+  63: '既濟完成，事已功成，警惕圓滿後的鬆懈與倒退。',
+  64: '未濟待成，尚未完成，保持方向與動能繼續前進。',
+};
+
+let lines = [];
+
+function goTo(n) {
+  document.querySelectorAll('.section').forEach((s,i) => s.classList.toggle('active',i===n));
+  document.querySelectorAll('.step-dot').forEach((d,i) => {
+    d.classList.toggle('active',i===n); d.classList.toggle('done',i<n);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function goToReady() {
+  for(let i=0;i<6;i++){
+    const val=document.getElementById('inp'+i).value;
+    if(val.length!==6){alert('請完整填入'+GROUP_LABELS[i]+'（6位數字）');return;}
+    if(!calcLine(val)){alert(GROUP_LABELS[i]+'計算有誤，請確認數字');return;}
+  }
+  goTo(2);
+}
+function goToReady() {
+  // validate all inputs before proceeding
+  for(let i=0;i<6;i++){
+    const val=document.getElementById('inp'+i).value;
+    if(val.length!==6){alert('請完整填入'+GROUP_LABELS[i]+'（6位數字）');return;}
+    if(!calcLine(val)){alert(GROUP_LABELS[i]+'計算有誤，請確認數字');return;}
+  }
+  goTo(2);
+}
+
+function buildInputs() {
+  const grid = document.getElementById('inputGrid');
+  grid.innerHTML = '';
+  for (let i=0;i<6;i++) {
+    const row = document.createElement('div');
+    row.className='yao-row'; row.id='yaoRow'+i;
+
+    const label = document.createElement('div');
+    label.className='yao-label';
+    label.innerHTML='<span>'+GROUP_LABELS[i]+'</span>（6碼）';
+
+    const inp = document.createElement('input');
+    inp.className='num-input'; inp.type='text'; inp.id='inp'+i;
+    inp.placeholder='請輸入6位數字'; inp.maxLength=6;
+    inp.setAttribute('inputmode','numeric'); inp.setAttribute('pattern','[0-9]*');
+    inp.addEventListener('input', (function(idx){ return function(){
+      this.value = this.value.replace(/\D/g,'');
+      document.getElementById('yaoRow'+idx).classList.toggle('filled', this.value.length===6);
+      if(this.value.length===6 && idx<5){
+        document.getElementById('inp'+(idx+1)).focus();
+      }
+    };})(i));
+
+    row.appendChild(label);
+    row.appendChild(inp);
+    grid.appendChild(row);
+  }
+}
+
+function parseNum(s) { let v=parseInt(s,10); if(isNaN(v)) return null; if(v===0) v=100; return v; }
+function getChange1 (s) { const v=parseNum(s); if(!v) return null; return v%4===1?9:5; }
+function getChange23(s) { const v=parseNum(s); if(!v) return null; const r=v%4; return (r===0||r===1)?8:4; }
+function calcLine(six) {
+  if(!six||six.length<6) return null;
+  const p1=six.slice(0,2),p2=six.slice(2,4),p3=six.slice(4,6);
+  const c1=getChange1(p1),c2=getChange23(p2),c3=getChange23(p3);
+  if(c1===null||c2===null||c3===null) return null;
+  const sum=c1+c2+c3;
+  let type,yang,moving;
+  if(sum===13){type='laoyang';yang=true;moving=true;}
+  else if(sum===17){type='shaoyang';yang=true;moving=false;}
+  else if(sum===21){type='shaoyin';yang=false;moving=false;}
+  else if(sum===25){type='laoyin';yang=false;moving=true;}
+  else return null;
+  return {yang,moving,sum,type,parts:[p1,p2,p3]};
+}
+
+
+
+function trigramKey(a,b,c){return (a?'y':'n')+(b?'y':'n')+(c?'y':'n');}
+function getTrigram(arr,idx){
+  const k=trigramKey(arr[idx[0]].yang,arr[idx[1]].yang,arr[idx[2]].yang);
+  return {...TRIGRAM_MAP[k], key:k};
+}
+
+function calculateAndShow() {
+  const results=[];
+  for(let i=0;i<6;i++){
+    const val=document.getElementById(`inp${i}`).value;
+    if(val.length!==6){alert(`請完整填入${GROUP_LABELS[i]}（6位數字）`);return;}
+    const r=calcLine(val);
+    if(!r){alert(`${GROUP_LABELS[i]}計算有誤，請確認數字`);return;}
+    results.push(r);
+  }
+  lines=results;
+  renderResult();
+  goTo(3);
+}
+
+function renderResult() {
+  const benLow=getTrigram(lines,[0,1,2]), benUp=getTrigram(lines,[3,4,5]);
+  const movingIdx=lines.map((l,i)=>l.moving?i:-1).filter(i=>i!==-1);
+  const hasMoving=movingIdx.length>0;
+
+  let bianLines=null,bianLow=null,bianUp=null;
+  if(hasMoving){
+    bianLines=lines.map(l=>({yang:l.moving?!l.yang:l.yang,moving:false,type:l.type}));
+    bianLow=getTrigram(bianLines,[0,1,2]); bianUp=getTrigram(bianLines,[3,4,5]);
+  }
+
+  let huLow=null,huUp=null,huNote=null;
+  if(hasMoving){
+    const hl=getTrigram(lines,[1,2,3]),hu=getTrigram(lines,[2,3,4]);
+    const benKey =trigramKey(lines[0].yang,lines[1].yang,lines[2].yang)+
+                  trigramKey(lines[3].yang,lines[4].yang,lines[5].yang);
+    const huKey  =trigramKey(lines[1].yang,lines[2].yang,lines[3].yang)+
+                  trigramKey(lines[2].yang,lines[3].yang,lines[4].yang);
+    const bianKey=bianLines?(trigramKey(bianLines[0].yang,bianLines[1].yang,bianLines[2].yang)+
+                  trigramKey(bianLines[3].yang,bianLines[4].yang,bianLines[5].yang)):null;
+
+    if(huKey===benKey&&bianLines){
+      // Step 2: re-compute using changed lines
+      const altHuL=getTrigram(bianLines,[1,2,3]);
+      const altHuU=getTrigram(bianLines,[2,3,4]);
+      const altKey=trigramKey(bianLines[1].yang,bianLines[2].yang,bianLines[3].yang)+
+                   trigramKey(bianLines[2].yang,bianLines[3].yang,bianLines[4].yang);
+      if(altKey===benKey||altKey===bianKey){
+        // Step 3: still matches original or changed → null
+        huNote='互卦與本卦或變卦重疊，無法定義';
+      } else {
+        huLow=altHuL; huUp=altHuU;
+      }
+    } else {
+      huLow=hl; huUp=hu;
+    }
+  }
+
+  // Header
+  const q=document.getElementById('questionField').value.trim();
+  document.getElementById('questionDisplay').textContent=q?`「${q}」`:'';
+  const benHex=getHexagram(benUp.key,benLow.key);
+  const benFullName=benHex?`第${benHex.no}卦　${benHex.name}`:`${benUp.name}${benLow.name}卦`;
+  document.getElementById('resultTitle').textContent=benHex?benHex.name:`${benUp.name}${benLow.name}卦`;
+  document.getElementById('resultSubtitle').textContent=benHex?`第 ${benHex.no} 卦　${benUp.nature}${benLow.nature}`:`${benUp.nature}${benLow.nature} · 本卦`;
+  document.getElementById('guaciTitle').textContent=benFullName;
+  document.getElementById('fieldDesc').textContent=benHex&&FIELD_DESC[benHex.no]?FIELD_DESC[benHex.no]:'——';
+  document.getElementById('guaciText').textContent=benHex&&GUACI[benHex.no]?GUACI[benHex.no]:'——';
+
+  // 本卦動爻爻辭
+  const YAO_POS=['初','二','三','四','五','上'];
+  function renderYaoci(containerEl, hexNo, movingIdxArr) {
+    containerEl.innerHTML='';
+    if(!hexNo||!YAOCI[hexNo]||movingIdxArr.length===0) return;
+    movingIdxArr.forEach(i=>{
+      const yaoText=YAOCI[hexNo][i]||'';
+      const div=document.createElement('div');
+      div.className='yaoci-block';
+      div.innerHTML=`<div class="yaoci-label">動爻・${YAO_POS[i]}爻</div><div class="yaoci-text">${yaoText}</div>`;
+      containerEl.appendChild(div);
+    });
+  }
+
+  const movingBlock=document.getElementById('movingYaociBlock');
+  const movingContent=document.getElementById('movingYaociContent');
+  if(hasMoving&&benHex){
+    renderYaoci(movingContent, benHex.no, movingIdx);
+    movingBlock.style.display='';
+  } else if(!hasMoving&&benHex&&YAOCI[benHex.no]){
+    // 無動爻：展開本卦全部六爻爻辭
+    movingContent.innerHTML='';
+    YAOCI[benHex.no].forEach((text,i)=>{
+      const div=document.createElement('div');
+      div.className='yaoci-block';
+      div.innerHTML=`<div class="yaoci-label">${YAO_POS[i]}爻</div><div class="yaoci-text">${text}</div>`;
+      movingContent.appendChild(div);
+    });
+    movingBlock.style.display='';
+  } else {
+    movingBlock.style.display='none';
+  }
+
+  // 互卦卡
+  const huCard=document.getElementById('huGuaCard');
+  if(hasMoving&&huLow&&huUp){
+    const huHex=getHexagram(huUp.key,huLow.key);
+    huCard.style.display='';
+    document.getElementById('huGuaTitle').textContent=huHex?`第${huHex.no}卦　${huHex.name}`:`${huUp.name}${huLow.name}卦`;
+    document.getElementById('huFieldDesc').textContent=huHex&&FIELD_DESC[huHex.no]?FIELD_DESC[huHex.no]:'——';
+    document.getElementById('huGuaciText').textContent=huHex&&GUACI[huHex.no]?GUACI[huHex.no]:'——';
+    renderYaoci(document.getElementById('huMovingYaociContent'), huHex?huHex.no:null, movingIdx);
+  } else { huCard.style.display='none'; }
+
+  // 變卦卡
+  const bianCard=document.getElementById('bianGuaCard');
+  if(hasMoving&&bianLines){
+    const bianHex=getHexagram(bianUp.key,bianLow.key);
+    bianCard.style.display='';
+    document.getElementById('bianGuaTitle').textContent=bianHex?`第${bianHex.no}卦　${bianHex.name}`:`${bianUp.name}${bianLow.name}卦`;
+    document.getElementById('bianFieldDesc').textContent=bianHex&&FIELD_DESC[bianHex.no]?FIELD_DESC[bianHex.no]:'——';
+    document.getElementById('bianGuaciText').textContent=bianHex&&GUACI[bianHex.no]?GUACI[bianHex.no]:'——';
+    renderYaoci(document.getElementById('bianMovingYaociContent'), bianHex?bianHex.no:null, movingIdx);
+  } else { bianCard.style.display='none'; }
+
+  // 卦名匯總區塊
+  const summaryDiv = document.getElementById('hexSummary');
+  const benHexForSummary = getHexagram(benUp.key, benLow.key);
+  const benSummaryText = benHexForSummary
+    ? `本卦　第${benHexForSummary.no}卦　${benHexForSummary.name}`
+    : `本卦　${benUp.name}${benLow.name}`;
+  document.getElementById('hexSummaryBen').textContent = benSummaryText;
+
+  if (hasMoving) {
+    const huHexS = (huLow && huUp) ? getHexagram(huUp.key, huLow.key) : null;
+    const bianHexS = bianLines ? getHexagram(bianUp.key, bianLow.key) : null;
+    document.getElementById('hexSummaryHu').textContent = huHexS
+      ? `互卦　第${huHexS.no}卦　${huHexS.name}`
+      : '互卦　不定義';
+    document.getElementById('hexSummaryBian').textContent = bianHexS
+      ? `變卦　第${bianHexS.no}卦　${bianHexS.name}`
+      : '變卦　不定義';
+    document.getElementById('hexSummaryHu').style.display = '';
+    document.getElementById('hexSummaryBian').style.display = '';
+  } else {
+    document.getElementById('hexSummaryHu').style.display = 'none';
+    document.getElementById('hexSummaryBian').style.display = 'none';
+  }
+  summaryDiv.style.display = '';
+
+  // A col
+  const trio=document.getElementById('hexTrio');
+  trio.innerHTML='';
+
+  function makeHexItem(typeLabel,linesArr,lower,upper,isUndef){
+    const item=document.createElement('div');
+    item.className=`hex-item${isUndef?' undef':''}`;
+    let lh='<div class="hex-lines">';
+    if(linesArr&&!isUndef){
+      linesArr.forEach((l,i)=>{
+        const isM=movingIdx.includes(i)&&linesArr===lines;
+        let cls=l.yang?'yang':'yin';
+
+        const marker = isM ? `<span class="moving-marker">${l.yang?'○':'×'}</span>` : '';
+        lh+=`<div class="hex-line ${cls}">${marker}</div>`;
+      });
+    }
+    lh+='</div>';
+    item.innerHTML=`${lh}<div class="hex-info">
+      <div class="hex-type-lbl">${typeLabel}</div>
+      ${isUndef
+        ?`<div class="hex-undef-txt">無動爻，不適用</div>`
+        :(()=>{const hx=getHexagram(upper.key,lower.key);
+          return `<div class="hex-name">${hx?'第'+hx.no+'卦 '+hx.name:upper.name+lower.name+'卦'}</div>
+          <div class="hex-nat">${upper.symbol} ${lower.symbol} · ${upper.nature}${lower.nature}</div>`;})()
+      }</div>`;
+    return item;
+  }
+
+  trio.appendChild(makeHexItem('本 卦',lines,benLow,benUp,false));
+
+  if(hasMoving&&huLow&&huUp){
+    const huDisp=[1,2,3,2,3,4].map(idx=>({yang:lines[idx].yang,moving:false}));
+    trio.appendChild(makeHexItem('互 卦',huDisp,huLow,huUp,false));
+  } else {
+    trio.appendChild(makeHexItem('互 卦',null,null,null,true));
+  }
+
+  if(hasMoving&&bianLines){
+    trio.appendChild(makeHexItem('變 卦',bianLines,bianLow,bianUp,false));
+  } else {
+    trio.appendChild(makeHexItem('變 卦',null,null,null,true));
+  }
+
+  // B col text
+  const nums=Array.from({length:6},(_,i)=>document.getElementById(`inp${i}`).value);
+  let txt='';
+  if(q) txt+=`問題：${q}\n\n`;
+  txt+=`起卦數字：\n`;
+  nums.forEach((n)=>{ txt+=`${n}\n`; });
+  const YAO_SHORT=['初','二','三','四','五','上'];
+  const fmtGua=(up,lo)=>{const hx=getHexagram(up.key,lo.key);return hx?'第'+hx.no+'卦'+hx.name:up.nature+lo.nature;};
+  txt+=`\n本卦：${fmtGua(benUp,benLow)}`;
+  txt+=`\n互卦：${(hasMoving&&huLow&&huUp) ? fmtGua(huUp,huLow) : '不定義'}`;
+  txt+=`\n變卦：${(hasMoving&&bianLow&&bianUp) ? fmtGua(bianUp,bianLow) : '不定義'}`;
+  txt+=`\n動爻：${movingIdx.length>0 ? movingIdx.map(i=>YAO_SHORT[i]).join('、') : '無'}`;
+
+  const intuition=document.getElementById('intuitionField').value.trim();
+  if(intuition) txt+=`\n\n我的直覺反應：\n${intuition}`;
+  if(huNote) txt+=`\n互卦備註：${huNote}`;
+  document.getElementById('copyBlock').textContent=txt;
+  const btn=document.getElementById('copyBtn');
+  btn.classList.remove('copied');
+  document.getElementById('copyIcon').textContent='⊕';
+  document.getElementById('copyLabel').textContent='一鍵複製';
+
+  // Guide
+  const g=document.getElementById('movingLineGuide');
+  const YAO_SHORT_G=['初','二','三','四','五','上'];
+  if(!hasMoving) g.textContent='本卦無動爻，只看本卦卦辭，互卦與變卦不適用。';
+  else if(movingIdx.length===1) g.textContent=`本卦有一個動爻（${YAO_SHORT_G[movingIdx[0]]}爻），以該爻爻辭為解卦關鍵，同時參考互卦與變卦。`;
+  else g.textContent=`本卦有多個動爻（${movingIdx.map(i=>YAO_SHORT_G[i]).join('、')}爻），以最能呼應問題的動爻爻辭為主，結合互卦與變卦整體判讀。`;
+}
+
+function copyText(){
+  // refresh copy block with latest intuition before copying
+  const intuition=document.getElementById('intuitionField').value.trim();
+  const base=document.getElementById('copyBlock').textContent;
+  // rebuild: strip old intuition section if present, then re-add
+  const cleanBase=base.includes('\n\n我的直覺反應：')?base.split('\n\n我的直覺反應：')[0]:base;
+  const text=intuition?cleanBase+'\n\n我的直覺反應：\n'+intuition:cleanBase;
+  document.getElementById('copyBlock').textContent=text;
+  const doSuccess=()=>{
+    const btn=document.getElementById('copyBtn');
+    btn.classList.add('copied');
+    document.getElementById('copyIcon').textContent='✓';
+    document.getElementById('copyLabel').textContent='已複製！';
+    setTimeout(()=>{btn.classList.remove('copied');document.getElementById('copyIcon').textContent='⊕';document.getElementById('copyLabel').textContent='一鍵複製';},2500);
+  };
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(doSuccess).catch(()=>{fallbackCopy(text);doSuccess();});
+  } else { fallbackCopy(text); doSuccess(); }
+}
+function fallbackCopy(text){
+  const el=document.createElement('textarea');
+  el.value=text; el.style.cssText='position:fixed;opacity:0';
+  document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
+}
+
+function restart(){
+  lines=[];
+  document.getElementById('questionField').value='';
+  document.getElementById('intuitionField').value='';
+  buildInputs(); goTo(0);
+}
+
+buildInputs();
+</script>
+</body>
+</html>
