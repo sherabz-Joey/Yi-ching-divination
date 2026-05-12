@@ -1,1 +1,1 @@
-# Yi-ching-divination
+# Yi-Ching-divination
