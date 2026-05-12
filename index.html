@@ -7,27 +7,28 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --paper: #f5ede0; --gold: #b8860b; --gold-light: #d4a843;
-  --red-muted: #c4533a; --smoke: #e8dcc8; --ash: #9b8e7a; --deep: #0d0a06;
+  --paper: #f9f7f4; --gold: #8b6913; --gold-light: #c9a53b;
+  --red-muted: #b14b32; --smoke: #2c2a28; --ash: #5c5954; --deep: #f0ede8;
+  --border-light: #e0dbd1;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  background: var(--deep); color: var(--paper);
+  background: var(--paper); color: var(--smoke);
   font-family: 'Noto Serif TC', serif;
   min-height: 100vh; overflow-x: hidden; position: relative;
 }
 body::before {
   content: ''; position: fixed; inset: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(184,134,11,0.08) 0%, transparent 70%),
-    radial-gradient(ellipse 60% 40% at 20% 100%, rgba(139,26,26,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 80% at 85% 50%, rgba(184,134,11,0.04) 0%, transparent 60%);
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(139,105,19,0.05) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 20% 100%, rgba(177,75,50,0.03) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 80% at 85% 50%, rgba(139,105,19,0.02) 0%, transparent 60%);
   pointer-events: none; z-index: 0;
 }
 body::after {
   content: ''; position: fixed; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.01'/%3E%3C/svg%3E");
   pointer-events: none; z-index: 0; opacity: 0.6;
 }
 
@@ -35,16 +36,16 @@ body::after {
 
 /* Header */
 .header { text-align: center; padding: 48px 0 40px; }
-.header-ornament { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 6px; color: var(--gold); opacity: 0.7; text-transform: uppercase; margin-bottom: 20px; }
-.header h1 { font-size: clamp(28px,6vw,46px); font-weight: 300; letter-spacing: 12px; color: var(--paper); line-height: 1.3; margin-bottom: 8px; }
-.header h1 span { color: var(--gold-light); }
+.header-ornament { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 6px; color: var(--gold); opacity: 0.6; text-transform: uppercase; margin-bottom: 20px; }
+.header h1 { font-size: clamp(28px,6vw,46px); font-weight: 300; letter-spacing: 12px; color: var(--smoke); line-height: 1.3; margin-bottom: 8px; }
+.header h1 span { color: var(--gold); }
 .header-subtitle { font-size: 13px; letter-spacing: 4px; color: var(--ash); font-weight: 300; }
 
 /* Steps */
 .step-nav { display: flex; gap: 8px; justify-content: center; margin-bottom: 40px; }
-.step-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(184,134,11,0.2); border: 1px solid rgba(184,134,11,0.3); transition: all 0.4s ease; }
-.step-dot.active { background: var(--gold); box-shadow: 0 0 8px rgba(184,134,11,0.6); }
-.step-dot.done   { background: rgba(184,134,11,0.5); }
+.step-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(139,105,19,0.15); border: 1px solid rgba(139,105,19,0.3); transition: all 0.4s ease; }
+.step-dot.active { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 8px rgba(139,105,19,0.3); }
+.step-dot.done   { background: rgba(139,105,19,0.6); border-color: rgba(139,105,19,0.6); }
 
 /* Sections */
 .section { display: none; animation: fadeIn 0.6s ease; }
@@ -53,60 +54,61 @@ body::after {
 
 /* Cards */
 .card {
-  background: rgba(245,237,224,0.04); border: 1px solid rgba(184,134,11,0.15);
+  background: #ffffff; border: 1px solid var(--border-light);
   border-radius: 8px; padding: 32px; margin-bottom: 24px; position: relative; overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
 .card::before {
   content: ''; position: absolute; top:0; left:0; right:0; height:1px;
-  background: linear-gradient(to right, transparent, rgba(184,134,11,0.4), transparent);
+  background: linear-gradient(to right, transparent, rgba(139,105,19,0.2), transparent);
 }
-.card-label { font-family:'Cinzel',serif; font-size:10px; letter-spacing:4px; color:var(--gold); opacity:0.7; margin-bottom:12px; text-transform:uppercase; }
-.card h2 { font-size:18px; font-weight:400; letter-spacing:3px; color:var(--paper); margin-bottom:16px; }
-.card p  { font-size:14px; line-height:2; color:var(--smoke); font-weight:300; }
+.card-label { font-family:'Cinzel',serif; font-size:10px; letter-spacing:4px; color:var(--gold); margin-bottom:12px; text-transform:uppercase; }
+.card h2 { font-size:18px; font-weight:500; letter-spacing:3px; color:var(--smoke); margin-bottom:16px; }
+.card p  { font-size:14px; line-height:2; color:var(--ash); font-weight:300; }
 
-.quote-block { border-left:2px solid var(--gold); padding:16px 24px; margin:0 0 40px; background:rgba(184,134,11,0.04); border-radius:0 4px 4px 0; }
-.quote-block p { font-size:14px; line-height:2; color:var(--smoke); font-weight:300; }
+.quote-block { border-left:2px solid var(--gold); padding:16px 24px; margin:0 0 40px; background:rgba(139,105,19,0.02); border-radius:0 4px 4px 0; }
+.quote-block p { font-size:14px; line-height:2; color:var(--ash); font-weight:300; }
 .quote-block cite { display:block; font-size:12px; color:var(--gold); margin-top:8px; font-style:normal; letter-spacing:2px; }
 
 .question-field {
-  width:100%; background:rgba(255,255,255,0.03); border:1px solid rgba(184,134,11,0.2);
-  border-radius:6px; color:var(--paper); font-family:'Noto Serif TC',serif;
+  width:100%; background:#fefefe; border:1px solid var(--border-light);
+  border-radius:6px; color:var(--smoke); font-family:'Noto Serif TC',serif;
   font-size:15px; letter-spacing:2px; padding:16px 20px; outline:none; resize:none; min-height:80px; transition:all 0.3s;
 }
-.question-field:focus { border-color:var(--gold); box-shadow:0 0 0 2px rgba(184,134,11,0.1); }
-.question-field::placeholder { color:rgba(155,142,122,0.35); font-size:13px; }
+.question-field:focus { border-color:var(--gold); box-shadow:0 0 0 2px rgba(139,105,19,0.1); }
+.question-field::placeholder { color:rgba(92,89,84,0.35); font-size:13px; }
 
-.tip-box { display:flex; gap:12px; align-items:flex-start; padding:14px 18px; background:rgba(184,134,11,0.05); border:1px solid rgba(184,134,11,0.15); border-radius:4px; margin-top:16px; }
+.tip-box { display:flex; gap:12px; align-items:flex-start; padding:14px 18px; background:rgba(139,105,19,0.03); border:1px solid rgba(139,105,19,0.12); border-radius:4px; margin-top:16px; }
 .tip-icon { color:var(--gold); font-size:14px; flex-shrink:0; margin-top:1px; }
 .tip-text { font-size:12px; line-height:1.9; color:var(--ash); }
 
 /* Input page */
 .input-grid { display:grid; gap:14px; }
-.yao-row { padding:18px 20px; background:rgba(255,255,255,0.02); border:1px solid rgba(184,134,11,0.12); border-radius:6px; transition:all 0.3s ease; }
-.yao-row:hover  { border-color:rgba(184,134,11,0.3); background:rgba(184,134,11,0.03); }
-.yao-row.filled { border-color:rgba(184,134,11,0.38); background:rgba(184,134,11,0.05); }
+.yao-row { padding:18px 20px; background:#ffffff; border:1px solid var(--border-light); border-radius:6px; transition:all 0.3s ease; }
+.yao-row:hover  { border-color:rgba(139,105,19,0.3); background:rgba(139,105,19,0.02); }
+.yao-row.filled { border-color:rgba(139,105,19,0.5); background:rgba(139,105,19,0.03); }
 .yao-label { font-size:11px; letter-spacing:3px; color:var(--ash); margin-bottom:10px; }
 .yao-label span { color:var(--gold); font-size:12px; }
 .num-input {
-  background:rgba(255,255,255,0.04); border:1px solid rgba(184,134,11,0.25); border-radius:4px;
-  color:var(--paper); font-family:'Noto Serif TC',serif; font-size:22px; letter-spacing:6px;
+  background:#fefefe; border:1px solid var(--border-light); border-radius:4px;
+  color:var(--smoke); font-family:'Noto Serif TC',serif; font-size:22px; letter-spacing:6px;
   padding:10px 16px; width:100%; text-align:center; transition:all 0.3s; outline:none;
 }
-.num-input:focus { border-color:var(--gold); box-shadow:0 0 0 2px rgba(184,134,11,0.15); background:rgba(184,134,11,0.04); }
-.num-input::placeholder { color:rgba(155,142,122,0.3); font-size:14px; letter-spacing:2px; }
+.num-input:focus { border-color:var(--gold); box-shadow:0 0 0 2px rgba(139,105,19,0.1); background:#fff; }
+.num-input::placeholder { color:rgba(92,89,84,0.3); font-size:14px; letter-spacing:2px; }
 
 /* Buttons */
 .btn { display:inline-flex; align-items:center; gap:10px; padding:14px 32px; border:1px solid; border-radius:4px; font-family:'Noto Serif TC',serif; font-size:14px; letter-spacing:3px; cursor:pointer; transition:all 0.3s; background:none; }
 .btn-primary { border-color:var(--gold); color:var(--gold); }
-.btn-primary:hover { background:rgba(184,134,11,0.12); box-shadow:0 0 20px rgba(184,134,11,0.2); }
-.btn-ghost { border-color:rgba(155,142,122,0.3); color:var(--ash); }
-.btn-ghost:hover { border-color:rgba(155,142,122,0.6); color:var(--smoke); }
+.btn-primary:hover { background:rgba(139,105,19,0.08); box-shadow:0 0 20px rgba(139,105,19,0.1); }
+.btn-ghost { border-color:rgba(92,89,84,0.3); color:var(--ash); }
+.btn-ghost:hover { border-color:rgba(92,89,84,0.6); color:var(--smoke); }
 .btn-large { padding:16px 48px; font-size:15px; }
 .btn-actions { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-top:32px; }
 
 /* Result */
 .result-header { text-align:center; padding:32px 0 28px; }
-.result-title { font-size:clamp(22px,5vw,38px); letter-spacing:8px; font-weight:300; color:var(--gold-light); margin-bottom:6px; }
+.result-title { font-size:clamp(22px,5vw,38px); letter-spacing:8px; font-weight:300; color:var(--gold); margin-bottom:6px; }
 .result-subtitle { font-size:12px; letter-spacing:4px; color:var(--ash); }
 
 /* AB columns */
@@ -114,72 +116,73 @@ body::after {
 @media (max-width:640px) { .result-ab { grid-template-columns:1fr; } }
 
 .col-a, .col-b {
-  background:rgba(245,237,224,0.04); border:1px solid rgba(184,134,11,0.15);
+  background:#ffffff; border:1px solid var(--border-light);
   border-radius:8px; padding:28px 24px; position:relative; overflow:hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
 .col-a::before, .col-b::before {
   content:''; position:absolute; top:0; left:0; right:0; height:1px;
-  background:linear-gradient(to right, transparent, rgba(184,134,11,0.4), transparent);
+  background:linear-gradient(to right, transparent, rgba(139,105,19,0.2), transparent);
 }
-.col-label { font-family:'Cinzel',serif; font-size:10px; letter-spacing:4px; color:var(--gold); opacity:0.6; text-transform:uppercase; margin-bottom:20px; }
+.col-label { font-family:'Cinzel',serif; font-size:10px; letter-spacing:4px; color:var(--gold); opacity:0.7; text-transform:uppercase; margin-bottom:20px; }
 
 /* Hex cards in A */
 .hex-trio { display:flex; flex-direction:column; gap:18px; }
-.hex-item { display:flex; align-items:center; gap:18px; padding:14px 16px; background:rgba(255,255,255,0.02); border:1px solid rgba(184,134,11,0.12); border-radius:6px; }
-.hex-item:hover { border-color:rgba(184,134,11,0.28); }
-.hex-item.undef { opacity:0.3; filter:grayscale(0.8); }
+.hex-item { display:flex; align-items:center; gap:18px; padding:14px 16px; background:#ffffff; border:1px solid var(--border-light); border-radius:6px; }
+.hex-item:hover { border-color:rgba(139,105,19,0.3); background:rgba(139,105,19,0.02); }
+.hex-item.undef { opacity:0.4; filter:grayscale(0.2); }
 
 .hex-lines { display:flex; flex-direction:column-reverse; gap:4px; align-items:center; width:52px; flex-shrink:0; }
 .hex-line { height:4px; border-radius:2px; position:relative; }
-.hex-line.yang { width:52px; background:var(--gold-light); box-shadow:0 0 5px rgba(184,134,11,0.35); }
+.hex-line.yang { width:52px; background:var(--gold); box-shadow:0 0 2px rgba(139,105,19,0.3); }
 .hex-line.yin  { width:52px; background:transparent; display:flex; gap:6px; }
-.hex-line.yin::before, .hex-line.yin::after { content:''; flex:1; height:4px; background:#7a9eb8; border-radius:2px; }
+.hex-line.yin::before, .hex-line.yin::after { content:''; flex:1; height:4px; background:#9aa0a6; border-radius:2px; }
 .hex-line .moving-marker { position:absolute; right:-18px; top:50%; transform:translateY(-50%); font-size:11px; color:var(--red-muted); pointer-events:none; }
 
 .hex-info { flex:1; }
-.hex-type-lbl { font-size:10px; letter-spacing:3px; color:var(--gold); opacity:0.6; margin-bottom:4px; font-family:'Cinzel',serif; }
-.hex-name     { font-size:20px; letter-spacing:5px; color:var(--paper); margin-bottom:2px; }
+.hex-type-lbl { font-size:10px; letter-spacing:3px; color:var(--gold); opacity:0.7; margin-bottom:4px; font-family:'Cinzel',serif; }
+.hex-name     { font-size:20px; letter-spacing:5px; color:var(--smoke); margin-bottom:2px; font-weight:500; }
 .hex-nat      { font-size:11px; letter-spacing:2px; color:var(--ash); }
 .hex-undef-txt{ font-size:13px; color:var(--ash); letter-spacing:2px; }
 
 /* B col */
 .copy-block {
-  background:rgba(0,0,0,0.28); border:1px solid rgba(184,134,11,0.14); border-radius:6px;
+  background:rgba(44,42,40,0.04); border:1px solid var(--border-light); border-radius:6px;
   padding:20px; font-size:14px; line-height:2.2; color:var(--smoke);
   letter-spacing:1px; font-weight:300; white-space:pre-wrap; word-break:break-all;
   min-height:140px; margin-bottom:14px;
 }
 .btn-copy {
-  width:100%; padding:14px; background:rgba(184,134,11,0.08); border:1px solid rgba(184,134,11,0.3);
+  width:100%; padding:14px; background:rgba(139,105,19,0.05); border:1px solid rgba(139,105,19,0.3);
   border-radius:4px; color:var(--gold); font-family:'Noto Serif TC',serif; font-size:13px;
   letter-spacing:3px; cursor:pointer; transition:all 0.3s;
   display:flex; align-items:center; justify-content:center; gap:8px;
 }
-.btn-copy:hover  { background:rgba(184,134,11,0.16); box-shadow:0 0 16px rgba(184,134,11,0.15); }
-.btn-copy.copied { border-color:rgba(100,180,100,0.5); color:#7ecb7e; background:rgba(100,180,100,0.06); }
+.btn-copy:hover  { background:rgba(139,105,19,0.1); box-shadow:0 0 12px rgba(139,105,19,0.1); }
+.btn-copy.copied { border-color:rgba(100,180,100,0.5); color:#5a8f5a; background:rgba(100,180,100,0.05); }
 
 /* Guide */
 .guide-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin:20px 0; }
 @media (max-width:600px) { .guide-grid { grid-template-columns:1fr; } }
-.guide-item { padding:18px 16px; border:1px solid rgba(184,134,11,0.12); border-radius:6px; background:rgba(255,255,255,0.015); }
-.guide-item-title { font-size:13px; letter-spacing:2px; color:var(--gold); margin-bottom:8px; }
+.guide-item { padding:18px 16px; border:1px solid var(--border-light); border-radius:6px; background:#ffffff; }
+.guide-item-title { font-size:13px; letter-spacing:2px; color:var(--gold); margin-bottom:8px; font-weight:500; }
 .guide-item-text  { font-size:12px; line-height:1.9; color:var(--ash); font-weight:300; }
-.interp-block { padding:16px 20px; background:rgba(255,255,255,0.02); border:1px solid rgba(184,134,11,0.1); border-radius:6px; margin-top:12px; }
-.interp-label { font-size:10px; letter-spacing:3px; color:var(--gold); opacity:0.6; margin-bottom:8px; font-family:'Cinzel',serif; text-transform:uppercase; }
+.interp-block { padding:16px 20px; background:rgba(44,42,40,0.02); border:1px solid var(--border-light); border-radius:6px; margin-top:12px; }
+.interp-label { font-size:10px; letter-spacing:3px; color:var(--gold); opacity:0.7; margin-bottom:8px; font-family:'Cinzel',serif; text-transform:uppercase; }
 .interp-text  { font-size:13px; line-height:2; color:var(--smoke); font-weight:300; }
 
 /* Ref table */
 .ref-table { width:100%; border-collapse:collapse; font-size:13px; margin:14px 0; }
-.ref-table th { text-align:left; padding:9px 12px; border-bottom:1px solid rgba(184,134,11,0.2); color:var(--gold); font-size:11px; letter-spacing:2px; font-weight:400; }
-.ref-table td { padding:9px 12px; border-bottom:1px solid rgba(255,255,255,0.04); color:var(--smoke); font-weight:300; }
+.ref-table th { text-align:left; padding:9px 12px; border-bottom:1px solid var(--border-light); color:var(--gold); font-size:11px; letter-spacing:2px; font-weight:500; }
+.ref-table td { padding:9px 12px; border-bottom:1px solid rgba(0,0,0,0.05); color:var(--smoke); font-weight:300; }
 .ref-table tr:last-child td { border-bottom:none; }
 
-.restart-zone { text-align:center; padding:36px 0; border-top:1px solid rgba(184,134,11,0.1); margin-top:36px; }
+.restart-zone { text-align:center; padding:36px 0; border-top:1px solid var(--border-light); margin-top:36px; }
 
 @keyframes glowReveal {
-  0%  { box-shadow:0 0 0 rgba(184,134,11,0); }
-  50% { box-shadow:0 0 24px rgba(184,134,11,0.18); }
-  100%{ box-shadow:0 0 0 rgba(184,134,11,0); }
+  0%  { box-shadow:0 0 0 rgba(139,105,19,0); }
+  50% { box-shadow:0 0 24px rgba(139,105,19,0.1); }
+  100%{ box-shadow:0 0 0 rgba(139,105,19,0); }
 }
 .glow-anim { animation:glowReveal 1.8s ease; }
 @media (max-width:480px) { .card { padding:20px 16px; } .num-input { font-size:18px; letter-spacing:4px; } }
@@ -187,18 +190,18 @@ body::after {
 /* 卦辭 block */
 .guaci-block {
   padding:16px 20px;
-  background:rgba(184,134,11,0.04);
+  background:rgba(139,105,19,0.03);
   border-left:2px solid var(--gold);
   border-radius:0 4px 4px 0;
 }
-.guaci-label { font-size:10px; letter-spacing:3px; color:var(--gold); opacity:0.7; margin-bottom:8px; font-family:'Cinzel',serif; text-transform:uppercase; }
+.guaci-label { font-size:10px; letter-spacing:3px; color:var(--gold); opacity:0.8; margin-bottom:8px; font-family:'Cinzel',serif; text-transform:uppercase; }
 .guaci-text  { font-size:14px; line-height:2.2; color:var(--smoke); font-weight:300; }
 
 /* 爻辭 block */
 .yaoci-block {
   padding:14px 18px;
-  background:rgba(196,83,58,0.05);
-  border-left:2px solid rgba(196,83,58,0.4);
+  background:rgba(177,75,50,0.04);
+  border-left:2px solid rgba(177,75,50,0.4);
   border-radius:0 4px 4px 0;
   margin-top:10px;
 }
@@ -207,15 +210,20 @@ body::after {
 
 /* 直覺欄位 */
 .intuition-field {
-  width:100%; background:rgba(255,255,255,0.03);
-  border:1px solid rgba(184,134,11,0.2); border-radius:6px;
-  color:var(--paper); font-family:'Noto Serif TC',serif;
+  width:100%; background:#fefefe;
+  border:1px solid var(--border-light); border-radius:6px;
+  color:var(--smoke); font-family:'Noto Serif TC',serif;
   font-size:14px; letter-spacing:1px; padding:14px 18px;
   outline:none; resize:none; min-height:90px; transition:all 0.3s;
   margin-top:12px;
 }
-.intuition-field:focus { border-color:var(--gold); box-shadow:0 0 0 2px rgba(184,134,11,0.1); }
-.intuition-field::placeholder { color:rgba(155,142,122,0.35); font-size:13px; }
+.intuition-field:focus { border-color:var(--gold); box-shadow:0 0 0 2px rgba(139,105,19,0.1); }
+.intuition-field::placeholder { color:rgba(92,89,84,0.35); font-size:13px; }
+
+@media (max-width:480px) {
+  .result-ab { gap: 16px; }
+  .col-a, .col-b { padding: 20px 16px; }
+}
 </style>
 </head>
 <body>
@@ -259,11 +267,11 @@ body::after {
       <p style="font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:14px;opacity:0.8;">如何產生占卜數字</p>
       <div class="tip-box" style="margin-top:0;margin-bottom:12px;">
         <span class="tip-icon">１</span>
-        <span class="tip-text"><strong style="color:var(--paper);letter-spacing:2px;">靜心</strong><br>沉澱下來，回到當下。<br>在心中清晰提問，或默請祝福。</span>
+        <span class="tip-text"><strong style="color:var(--smoke);letter-spacing:2px;">靜心</strong><br>沉澱下來，回到當下。<br>在心中清晰提問，或默請祝福。</span>
       </div>
       <div class="tip-box" style="margin-top:0;">
         <span class="tip-icon">２</span>
-        <span class="tip-text"><strong style="color:var(--paper);letter-spacing:2px;">領受數字</strong><br>數字無須刻意挑選——<br>可以是直覺、念頭、眼前所見，或任何自然浮現的數字。<br>重點不在來源，而在你允許它出現。</span>
+        <span class="tip-text"><strong style="color:var(--smoke);letter-spacing:2px;">領受數字</strong><br>數字無須刻意挑選——<br>可以是直覺、念頭、眼前所見，或任何自然浮現的數字。<br>重點不在來源，而在你允許它出現。</span>
       </div>
     </div>
   </div>
@@ -300,7 +308,7 @@ body::after {
       讓問題在心中再次清晰浮現，<br>
       感受當下的身心狀態。
     </p>
-    <div style="width:48px;height:1px;background:rgba(184,134,11,0.3);margin:0 auto 32px;"></div>
+    <div style="width:48px;height:1px;background:rgba(139,105,19,0.3);margin:0 auto 32px;"></div>
     <p style="font-size:12px;letter-spacing:3px;color:var(--ash);">準備好後，再按下顯示卦象。</p>
   </div>
   <div class="btn-actions">
@@ -318,10 +326,19 @@ body::after {
   </div>
 
   <!-- 卦名匯總 -->
-  <div id="hexSummary" style="display:none;text-align:center;margin:0 0 28px;padding:18px 24px;background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.18);border-radius:10px;letter-spacing:2px;">
-    <div id="hexSummaryBen"  style="font-size:16px;color:var(--gold-light);margin-bottom:10px;font-weight:400;"></div>
+  <div id="hexSummary" style="display:none;text-align:center;margin:0 0 28px;padding:18px 24px;background:rgba(139,105,19,0.04);border:1px solid rgba(139,105,19,0.15);border-radius:10px;letter-spacing:2px;">
+    <div id="hexSummaryBen"  style="font-size:16px;color:var(--gold);margin-bottom:10px;font-weight:400;"></div>
     <div id="hexSummaryHu"   style="font-size:13px;color:var(--ash);margin-bottom:6px;"></div>
     <div id="hexSummaryBian" style="font-size:13px;color:var(--ash);"></div>
+  </div>
+
+
+  <!-- 無動爻補充卦象（錯卦・覆卦・交卦）-->
+  <div id="suppGuaSection" style="display:none;margin-bottom:24px;">
+    <div style="text-align:center;font-size:11px;letter-spacing:3px;color:var(--ash);padding:10px;border:1px solid var(--border-light);border-radius:4px;margin-bottom:14px;background:rgba(44,42,40,0.02);">
+      無動爻補充觀看　錯卦・覆卦・交卦
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;" id="suppGuaTrio"></div>
   </div>
 
   <div class="result-ab">
@@ -561,11 +578,26 @@ const H64 = {
   'nyyyyn':{no:61,name:'風澤中孚'},
   'ynnnny':{no:62,name:'雷山小過'},
   'nynyny':{no:63,name:'水火既濟'},
-  'ynynyn':{no:64,name:'火水未濟'}
-};
+  'ynynyn':{no:64,name:'火水未濟'},
+}
 
 function getHexagram(upperKey, lowerKey) {
   return H64[upperKey + lowerKey] || null;
+}
+
+// 錯卦：陰陽全反轉
+function getErrorHex(upKey, lowKey) {
+  const flip = s => s.split('').map(c => c==='y'?'n':'y').join('');
+  return getHexagram(flip(upKey), flip(lowKey));
+}
+// 覆卦：整體上下翻轉（上卦變下卦，且各自內部反轉）
+function getCoverHex(upKey, lowKey) {
+  const rev = s => s.split('').reverse().join('');
+  return getHexagram(rev(lowKey), rev(upKey));
+}
+// 交卦：上下卦互換（本系統定義）
+function getExchangeHex(upKey, lowKey) {
+  return getHexagram(lowKey, upKey);
 }
 
 // 王弼本六十四卦卦辭（以卦序為key）
@@ -867,6 +899,7 @@ function calculateAndShow() {
 }
 
 function renderResult() {
+  let suppCopyText='';
   const benLow=getTrigram(lines,[0,1,2]), benUp=getTrigram(lines,[3,4,5]);
   const movingIdx=lines.map((l,i)=>l.moving?i:-1).filter(i=>i!==-1);
   const hasMoving=movingIdx.length>0;
@@ -995,6 +1028,39 @@ function renderResult() {
   }
   summaryDiv.style.display = '';
 
+  // 無動爻補充卦象（錯覆交）
+  const suppSection = document.getElementById('suppGuaSection');
+  const suppTrio = document.getElementById('suppGuaTrio');
+  if (!hasMoving) {
+    const upKey = benUp.key, lowKey = benLow.key;
+    const errHex = getErrorHex(upKey, lowKey);
+    const covHex = getCoverHex(upKey, lowKey);
+    const exHex  = getExchangeHex(upKey, lowKey);
+    suppTrio.innerHTML = '';
+    const suppLabels = ['錯　卦','覆　卦','交　卦'];
+    const suppDescs  = ['你的陰影面','對方立場','內外對調'];
+    [errHex, covHex, exHex].forEach((hex, i) => {
+      const div = document.createElement('div');
+      div.style.cssText = 'padding:16px;border:1px solid rgba(0,0,0,0.08);border-radius:6px;background:#ffffff;text-align:center;';
+      div.innerHTML = hex
+        ? '<div style="font-size:10px;letter-spacing:3px;color:var(--gold);opacity:0.8;margin-bottom:6px;font-family:Cinzel,serif;">'
+          + suppLabels[i] + '</div>'
+          + '<div style="font-size:10px;letter-spacing:2px;color:var(--ash);margin-bottom:8px;">' + suppDescs[i] + '</div>'
+          + '<div style="font-size:16px;letter-spacing:3px;color:var(--smoke);">第' + hex.no + '卦</div>'
+          + '<div style="font-size:15px;letter-spacing:3px;color:var(--gold);margin-top:4px;">' + hex.name + '</div>'
+        : '<div style="color:var(--ash);font-size:12px;">' + suppLabels[i] + '<br>—</div>';
+      suppTrio.appendChild(div);
+    });
+    suppSection.style.display = '';
+    // Add to copy text
+    if (errHex) suppCopyText = '\n錯卦：第'+errHex.no+'卦　'+errHex.name;
+    if (covHex) suppCopyText += '\n覆卦：第'+covHex.no+'卦　'+covHex.name;
+    if (exHex)  suppCopyText += '\n交卦：第'+exHex.no+'卦　'+exHex.name;
+  } else {
+    suppSection.style.display = 'none';
+    suppCopyText = '';
+  }
+
   // A col
   const trio=document.getElementById('hexTrio');
   trio.innerHTML='';
@@ -1051,6 +1117,7 @@ function renderResult() {
   txt+=`\n互卦：${(hasMoving&&huLow&&huUp) ? fmtGua(huUp,huLow) : '不定義'}`;
   txt+=`\n變卦：${(hasMoving&&bianLow&&bianUp) ? fmtGua(bianUp,bianLow) : '不定義'}`;
   txt+=`\n動爻：${movingIdx.length>0 ? movingIdx.map(i=>YAO_SHORT[i]).join('、') : '無'}`;
+  if(suppCopyText) txt+=suppCopyText;
 
   const intuition=document.getElementById('intuitionField').value.trim();
   if(intuition) txt+=`\n\n我的直覺反應：\n${intuition}`;
