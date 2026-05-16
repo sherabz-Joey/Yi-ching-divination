@@ -235,7 +235,7 @@ body::after {
   </div>
 
   <div class="card">
-    <div class="card-label">出生資訊（人類圖對照）</div>
+    <div class="card-label">出生資訊（八字對照）</div>
     <h2>出生年月日・時間・地點</h2>
     <div class="birth-row">
       <div class="input-group"><label>出生年</label><input type="text" id="birthYear" placeholder="例如：1985" maxlength="4"></div>
@@ -247,7 +247,7 @@ body::after {
       <div class="input-group"><label>出生分</label><input type="text" id="birthMin" placeholder="0-59" maxlength="2"></div>
       <div class="input-group"><label>出生地點（縣市/國家）</label><input type="text" id="birthPlace" placeholder="例如：台北市"></div>
     </div>
-    <div class="tip-box"><span class="tip-icon">✦</span><span class="tip-text">此資訊僅用於占卜記錄與人類圖對照，不會儲存於伺服器。</span></div>
+    <div class="tip-box"><span class="tip-icon">✦</span><span class="tip-text">僅用於占卜與八字對照，不儲存於伺服器。</span></div>
   </div>
 
   <div class="card">
@@ -556,7 +556,7 @@ function getChange23(s){ const v=parseNum(s); if(!v) return null; const r=v%4; r
 function calcLine(six){ if(!six||six.length<6) return null; const p1=six.slice(0,2),p2=six.slice(2,4),p3=six.slice(4,6); const c1=getChange1(p1),c2=getChange23(p2),c3=getChange23(p3); if(c1===null||c2===null||c3===null) return null; const sum=c1+c2+c3; if(sum===13) return {yang:true,moving:true,sum:13,type:'laoyang'}; if(sum===17) return {yang:true,moving:false,sum:17,type:'shaoyang'}; if(sum===21) return {yang:false,moving:false,sum:21,type:'shaoyin'}; if(sum===25) return {yang:false,moving:true,sum:25,type:'laoyin'}; return null; }
 function trigramKey(a,b,c){ return (a?'y':'n')+(b?'y':'n')+(c?'y':'n'); }
 function getTrigram(arr,idx){ const k=trigramKey(arr[idx[0]].yang,arr[idx[1]].yang,arr[idx[2]].yang); return {...TRIGRAM_MAP[k], key:k}; }
-function getBirthText(){ const y=document.getElementById('birthYear').value, m=document.getElementById('birthMonth').value, d=document.getElementById('birthDay').value, h=document.getElementById('birthHour').value, min=document.getElementById('birthMin').value, place=document.getElementById('birthPlace').value; if(!y&&!m&&!d&&!h&&!min&&!place) return ''; let text='★ 出生資訊（人類圖對照）\n'; if(y&&m&&d) text+=`出生日期：${y}年${m}月${d}日\n`; if(h&&min) text+=`出生時間：${h.padStart(2,'0')}:${min.padStart(2,'0')}\n`; if(place) text+=`出生地點：${place}\n`; return text+'\n'; }
+function getBirthText(){ const y=document.getElementById('birthYear').value, m=document.getElementById('birthMonth').value, d=document.getElementById('birthDay').value, h=document.getElementById('birthHour').value, min=document.getElementById('birthMin').value, place=document.getElementById('birthPlace').value; if(!y&&!m&&!d&&!h&&!min&&!place) return ''; let text='★ 出生資訊（八字對照）\n'; if(y&&m&&d) text+=`出生日期：${y}年${m}月${d}日\n`; if(h&&min) text+=`出生時間：${h.padStart(2,'0')}:${min.padStart(2,'0')}\n`; if(place) text+=`出生地點：${place}\n`; return text+'\n'; }
 function calculateAndShow(){ const results=[]; for(let i=0;i<6;i++){ const val=document.getElementById(`inp${i}`).value; if(val.length!==6){ alert(`請完整填入${GROUP_LABELS[i]}（6位數字）`); return; } const r=calcLine(val); if(!r){ alert(`${GROUP_LABELS[i]}計算有誤`); return; } results.push(r); } lines=results; renderResult(); goTo(3); }
 
 function renderResult(){
